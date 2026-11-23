@@ -1,0 +1,3649 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÓA HỌC 10 - BÀI 13: LIÊN KẾT HYDROGEN VÀ TƯƠNG TÁC VAN DER WAALS (KNTT)</title>
+    <style>
+        /* =====================================================================
+           1. BIẾN MÀU SẮC, TỶ LỆ CỠ CHỮ & THIẾT LẬP CƠ BẢN
+           ===================================================================== */
+        :root {
+            --sidebar-bg: #403e91;
+            --sidebar-active: #534fa8;
+            --sidebar-hover: #4e4ba0;
+            --bg-main: #f3f2fa;
+            --card-bg: #ffffff;
+            --primary-text: #2d3436;
+            --secondary-text: #4a5568;
+            --accent-purple: #6c5ce7;
+            --accent-orange: #f39c12;
+            --accent-orange-hover: #e67e22;
+            --accent-teal: #05c46b;
+            --accent-red: #ea2027;
+            --accent-blue: #0984e3;
+            --border-color: #dfe6e9;
+            --badge-bg: #e0dbf5;
+            --badge-text: #5f27cd;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.12);
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --ui-scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, 'Noto Sans', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--primary-text);
+            display: flex;
+            font-size: 16px;
+        }
+
+        button, input, textarea {
+            font-family: inherit;
+        }
+
+        sub, sup {
+            font-size: 0.72em;
+            line-height: 0;
+        }
+
+        /* =====================================================================
+           2. SIDEBAR BÊN TRÁI (MÀU TÍM ĐẬM #403e91)
+           ===================================================================== */
+        .sidebar {
+            width: 330px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.12);
+            flex-shrink: 0;
+            transition: transform 0.25s ease, width 0.25s ease, padding 0.25s ease;
+            z-index: 40;
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+            border-right: none;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .subject-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #74b9ff, #6c5ce7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+            flex-shrink: 0;
+        }
+
+        .subject-title-container {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .subject-title {
+            font-size: 1.32rem;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+        }
+
+        .subject-subtitle {
+            font-size: 0.82rem;
+            color: #e0e6ed;
+            margin-top: 2px;
+            line-height: 1.35;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.98rem;
+            user-select: none;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            box-shadow: inset 4px 0 0 #ffffff;
+        }
+
+        .nav-icon {
+            font-size: 1.18rem;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* ACCORDION PHẦN LUYỆN TẬP */
+        .practice-submenu {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            margin-left: 12px;
+            margin-top: 2px;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            padding-left: 10px;
+        }
+
+        .sub-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 11px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            gap: 8px;
+        }
+
+        .sub-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .sub-item.active {
+            background-color: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            font-weight: 800;
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .sub-badge {
+            background-color: rgba(255, 255, 255, 0.24);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* LƯỚI Ô SỐ CÂU HỎI */
+        .question-dots {
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin: 4px 0 8px 0;
+            padding: 8px;
+            background-color: rgba(0, 0, 0, 0.22);
+            border-radius: 8px;
+        }
+
+        .dot-btn {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            height: 32px;
+            border-radius: 6px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .dot-btn:hover {
+            background-color: rgba(255, 255, 255, 0.35);
+            transform: scale(1.06);
+        }
+
+        .dot-btn.correct {
+            background-color: var(--success-color) !important;
+            color: #ffffff !important;
+            border-color: var(--success-color) !important;
+        }
+
+        .dot-btn.partial {
+            background-color: var(--warning-color) !important;
+            color: #ffffff !important;
+            border-color: var(--warning-color) !important;
+        }
+
+        .dot-btn.wrong {
+            background-color: var(--error-color) !important;
+            color: #ffffff !important;
+            border-color: var(--error-color) !important;
+        }
+
+        .dot-btn.active {
+            outline: 2.5px solid #ffffff;
+            outline-offset: 1px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            font-weight: 900;
+        }
+
+        .sidebar-footer {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.92);
+            border: 1.5px dashed rgba(255, 255, 255, 0.45);
+            width: 100%;
+            padding: 10px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 35;
+        }
+
+        /* =====================================================================
+           3. KHÔNG GIAN CHÍNH & THANH HEADER ĐIỀU KHIỂN MÁY CHIẾU
+           ===================================================================== */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-main);
+            overflow-y: auto;
+            position: relative;
+            min-width: 0;
+        }
+
+        .teacher-banner {
+            background-color: #ffe8cc;
+            border-bottom: 2.5px solid #f39c12;
+            color: #9c4a00;
+            padding: 9px 24px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .content-header {
+            background-color: var(--card-bg);
+            padding: 11px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1.5px solid var(--border-color);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .btn-toggle-sidebar {
+            background: #f1f2f6;
+            color: var(--sidebar-bg);
+            border: 1.5px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-toggle-sidebar:hover {
+            background: var(--sidebar-bg);
+            color: #ffffff;
+            border-color: var(--sidebar-bg);
+        }
+
+        .content-header h2 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 800;
+            line-height: 1.25;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .display-toolbar {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #f1f2f6;
+            padding: 4px 5px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-color);
+        }
+
+        .font-ctrl-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #1e293b;
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-weight: 800;
+            font-size: 0.86rem;
+            cursor: pointer;
+            min-width: 36px;
+            transition: all 0.15s;
+        }
+
+        .font-ctrl-btn:hover {
+            border-color: var(--sidebar-bg);
+            color: var(--sidebar-bg);
+            background: #eef0ff;
+        }
+
+        .font-scale-readout {
+            background: transparent;
+            border: none;
+            color: var(--sidebar-bg);
+            font-weight: 900;
+            font-size: 0.86rem;
+            padding: 4px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .font-scale-readout:hover {
+            background: #e0dbf5;
+        }
+
+        .btn-projector {
+            background: linear-gradient(135deg, #403e91, #6c5ce7);
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 10px rgba(64, 62, 145, 0.28);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-projector:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(64, 62, 145, 0.4);
+        }
+
+        .btn-projector.active {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            box-shadow: 0 3px 12px rgba(230, 126, 34, 0.45);
+        }
+
+        .btn-sound-toggle {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #1e293b;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .btn-sound-toggle:hover {
+            border-color: var(--sidebar-bg);
+            background: #f1f2f6;
+        }
+
+        .btn-sound-toggle.muted {
+            background: #ffeef0;
+            border-color: var(--error-color);
+            color: var(--error-color);
+        }
+
+        .header-progress {
+            background-color: #f1f2f6;
+            color: #2c3e50;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.88rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-score {
+            background: #e3f7eb;
+            color: #157347;
+            border: 1.5px solid #a5e3bd;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+
+        .view-pane {
+            display: none;
+            padding: 22px 28px;
+            flex-grow: 1;
+        }
+
+        .view-pane.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =====================================================================
+           4. TRANG CHỦ (HOME VIEW)
+           ===================================================================== */
+        .home-view {
+            max-width: 1100px;
+            width: 100%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 8px 4px;
+        }
+
+        .home-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .home-logo {
+            font-size: 3rem;
+        }
+
+        .home-badge {
+            background-color: var(--badge-bg);
+            color: var(--sidebar-bg);
+            padding: 6px 16px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .home-title {
+            font-size: calc(2.1rem * var(--ui-scale));
+            font-weight: 900;
+            color: #0077b6;
+            line-height: 1.24;
+        }
+
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 18px;
+        }
+
+        .home-info-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px;
+            border: 1.5px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .home-info-card h3 {
+            color: var(--sidebar-bg);
+            font-size: calc(1.15rem * var(--ui-scale));
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .home-info-card ul {
+            padding-left: 22px;
+            line-height: 1.72;
+            color: var(--secondary-text);
+            font-size: calc(1.02rem * var(--ui-scale));
+        }
+
+        .home-info-card li {
+            margin-bottom: 6px;
+        }
+
+        .home-warmup {
+            background: #fff9f0;
+            border: 2px solid #f6b93b;
+            border-left: 6px solid #f39c12;
+            border-radius: 14px;
+            padding: 18px 22px;
+        }
+
+        .home-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .btn-primary-lg {
+            background: linear-gradient(135deg, var(--accent-purple), #5f27cd);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            font-size: calc(1.06rem * var(--ui-scale));
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(108, 92, 231, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-primary-lg:hover { transform: translateY(-2px); }
+
+        .btn-orange-lg {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: #ffffff;
+            border: none;
+            padding: 14px 26px;
+            font-size: calc(1.06rem * var(--ui-scale));
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(243, 156, 18, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-orange-lg:hover { transform: translateY(-2px); }
+
+        /* =====================================================================
+           5. KHÔNG GIAN BÀI HỌC (5 SLIDE + ĐỒNG HỒ + MÔ PHỎNG SVG)
+           ===================================================================== */
+        .slideshow-container {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border-radius: 18px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            flex-grow: 1;
+            min-height: 540px;
+            border: 1.5px solid var(--border-color);
+        }
+
+        .slideshow-header {
+            background-color: var(--sidebar-bg);
+            padding: 12px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            flex-wrap: wrap;
+        }
+
+        .slideshow-title {
+            font-weight: 800;
+            font-size: 1.04rem;
+        }
+
+        .slideshow-controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-speak-slide {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-speak-slide:hover { background-color: #5f27cd; }
+
+        .slideshow-index {
+            background-color: rgba(255, 255, 255, 0.22);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 800;
+        }
+
+        /* ĐỒNG HỒ ĐẾM NGƯỢC */
+        .slide-timer-bar {
+            background-color: #f8f9fa;
+            border-bottom: 1.5px solid var(--border-color);
+            padding: 8px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .timer-display-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.38rem;
+            font-weight: 900;
+            color: #2c3e50;
+            background-color: #ffffff;
+            border: 1.5px solid var(--border-color);
+            padding: 3px 12px;
+            border-radius: 7px;
+            min-width: 86px;
+            text-align: center;
+        }
+
+        .timer-clock.warning {
+            color: #d63031;
+            background-color: #ffeef0;
+            border-color: #d63031;
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker { 50% { opacity: 0.35; } }
+
+        .timer-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .timer-preset-btn, .timer-btn {
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: #2c3e50;
+            padding: 5px 11px;
+            border-radius: 7px;
+            font-size: 0.84rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .timer-preset-btn:hover, .timer-btn:hover {
+            border-color: var(--sidebar-bg);
+            color: var(--sidebar-bg);
+        }
+
+        .timer-btn-start {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+            border-color: var(--accent-purple);
+        }
+
+        .timer-btn-start:hover {
+            background-color: #5f27cd;
+            color: #ffffff;
+        }
+
+        /* SLIDE WORKSPACE */
+        .slide-workspace {
+            padding: 24px 32px;
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-content {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .slide-content.active-slide { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-title {
+            font-size: calc(1.7rem * var(--ui-scale));
+            font-weight: 900;
+            color: var(--sidebar-bg);
+            border-bottom: 3.5px solid var(--accent-orange);
+            padding-bottom: 6px;
+            align-self: flex-start;
+        }
+
+        .slide-body {
+            font-size: calc(1.06rem * var(--ui-scale));
+            color: var(--primary-text);
+            line-height: 1.72;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .slide-body ul, .slide-body ol { padding-left: 24px; }
+        .slide-body li { margin-bottom: 6px; }
+
+        .sgk-box {
+            background: #f5f3ff;
+            border: 1.5px solid #d6ccff;
+            border-left: 5px solid var(--sidebar-bg);
+            border-radius: 12px;
+            padding: 15px 18px;
+        }
+
+        .sgk-box.exp {
+            background: #eef7ff;
+            border-color: #b8dcff;
+            border-left-color: #0984e3;
+        }
+
+        .sgk-box.know {
+            background: #fff9eb;
+            border-color: #fbd38d;
+            border-left-color: #f39c12;
+        }
+
+        .sgk-box.green {
+            background: #edfbf2;
+            border-color: #a5e3bd;
+            border-left-color: #05c46b;
+        }
+
+        .sgk-box-title {
+            font-weight: 800;
+            color: var(--sidebar-bg);
+            margin-bottom: 8px;
+            font-size: calc(1.08rem * var(--ui-scale));
+        }
+
+        .sgk-box.exp .sgk-box-title { color: #0652dd; }
+        .sgk-box.know .sgk-box-title { color: #b75b00; }
+        .sgk-box.green .sgk-box-title { color: #116b3b; }
+
+        .btn-reveal-sgk {
+            margin-top: 10px;
+            background: var(--sidebar-bg);
+            color: #ffffff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: calc(0.9rem * var(--ui-scale));
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reveal-sgk:hover { background: var(--accent-purple); }
+
+        .sgk-answer-panel {
+            display: none;
+            margin-top: 10px;
+            background: #ffffff;
+            border: 1.5px dashed #6c5ce7;
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #1e293b;
+        }
+
+        .sgk-answer-panel.open { display: block; }
+
+        .slide-two-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 14px;
+        }
+
+        .formula-pill {
+            display: inline-block;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 4px 4px 0 0;
+        }
+
+        .slideshow-footer {
+            background-color: #f8f9fa;
+            border-top: 1.5px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .slide-nav-btn {
+            background-color: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: #2c3e50;
+            padding: 9px 18px;
+            font-size: 0.96rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .slide-nav-btn:hover {
+            background-color: #eef0ff;
+            border-color: var(--sidebar-bg);
+            color: var(--sidebar-bg);
+        }
+
+        .slide-progress-wrapper { flex-grow: 1; display: flex; align-items: center; }
+
+        .slide-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #dfe6e9;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slide-progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+        }
+
+        /* PHÒNG THÍ NGHIỆM ẢO & MÔ PHỎNG SVG (SLIDE 5) */
+        .simulation-container {
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 16px;
+            background-color: #f8fafc;
+        }
+
+        .sim-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-sim-option {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #1e293b;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: calc(0.94rem * var(--ui-scale));
+        }
+
+        .btn-sim-option.active {
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            border-color: var(--sidebar-bg);
+            box-shadow: 0 4px 10px rgba(64, 62, 145, 0.25);
+        }
+
+        .sim-visual-box {
+            min-height: 295px;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 14px;
+            color: #ffffff;
+        }
+
+        .sim-action-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .btn-sim-step {
+            background: var(--accent-orange);
+            color: #ffffff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: calc(0.92rem * var(--ui-scale));
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sim-step:hover { background: var(--accent-orange-hover); }
+        .btn-sim-step.active-step { background: var(--accent-teal); box-shadow: 0 0 0 2px #1e293b; }
+
+        .sim-desc-box {
+            margin-top: 12px;
+            font-size: calc(1.02rem * var(--ui-scale));
+            line-height: 1.65;
+            background-color: #fff9f1;
+            border-left: 5px solid var(--accent-orange);
+            padding: 12px 16px;
+            border-radius: 6px;
+            color: #1e293b;
+        }
+
+        @keyframes hBondPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+
+        @keyframes cloudShift {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(14px); }
+        }
+
+        /* =====================================================================
+           6. HỆ THỐNG TỪ KHÓA (8 THẺ LẬT 3D)
+           ===================================================================== */
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            perspective: 1000px;
+        }
+
+        .keyword-card {
+            background-color: transparent;
+            min-height: 230px;
+            cursor: pointer;
+        }
+
+        .keyword-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 230px;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: var(--shadow);
+            border-radius: 15px;
+        }
+
+        .keyword-card.flipped .keyword-inner { transform: rotateY(180deg); }
+
+        .keyword-front, .keyword-back {
+            position: absolute;
+            inset: 0;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .keyword-front {
+            background-color: #ffffff;
+            color: #2c3e50;
+            border: 1.5px solid var(--border-color);
+            border-left: 6px solid var(--sidebar-bg);
+        }
+
+        .keyword-symbol { font-size: 2.35rem; margin-bottom: 8px; }
+
+        .keyword-front h3 {
+            font-size: calc(1.2rem * var(--ui-scale));
+            color: var(--sidebar-bg);
+            margin-bottom: 6px;
+            font-weight: 800;
+        }
+
+        .keyword-hint { font-size: 0.84rem; color: #64748b; font-style: italic; }
+
+        .keyword-back {
+            background: linear-gradient(135deg, var(--sidebar-bg), var(--sidebar-active));
+            color: #ffffff;
+            transform: rotateY(180deg);
+            text-align: left;
+            align-items: flex-start;
+            line-height: 1.56;
+            font-size: calc(0.98rem * var(--ui-scale));
+            overflow-y: auto;
+        }
+
+        .keyword-back h3 {
+            font-size: calc(1.08rem * var(--ui-scale));
+            color: #ffd166;
+            margin-bottom: 6px;
+        }
+
+        /* =====================================================================
+           7. KHÔNG GIAN LUYỆN TẬP CHUẨN ĐỀ THI TỐT NGHIỆP THPT 2025
+           ===================================================================== */
+        .practice-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        @media (min-width: 960px) {
+            .practice-layout.has-table {
+                display: grid;
+                grid-template-columns: 1.05fr 1fr;
+                gap: 22px;
+                align-items: start;
+            }
+        }
+
+        .data-box {
+            background-color: #fff9f1;
+            border: 1.5px solid #ffd8a8;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .data-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .data-title {
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: calc(1.08rem * var(--ui-scale));
+        }
+
+        .btn-zoom-table {
+            background: var(--sidebar-bg);
+            color: #ffffff;
+            border: none;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-zoom-table:hover { background: var(--accent-purple); }
+
+        .data-table-container { overflow-x: auto; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: calc(0.98rem * var(--ui-scale));
+            background: #ffffff;
+        }
+
+        .data-table th {
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            font-weight: 800;
+            padding: 10px 9px;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        .data-table td {
+            border: 1.5px solid #cbd5e1;
+            padding: 9px 9px;
+            color: #1e293b;
+        }
+
+        .data-source {
+            font-size: 0.84rem;
+            color: #64748b;
+            text-align: right;
+            font-style: italic;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 26px 30px;
+            box-shadow: var(--shadow);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+        }
+
+        .question-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .question-badge {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 6px 16px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .keyword-toggle {
+            background: #eef2ff;
+            border: 1.5px solid #c7d2fe;
+            color: #3730a3;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.86rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .keyword-toggle[aria-pressed="true"] {
+            background: #fde68a;
+            border-color: #d97706;
+            color: #78350f;
+        }
+
+        .question-text {
+            font-size: calc(1.28rem * var(--ui-scale));
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.58;
+        }
+
+        .practice-mark {
+            background: #ffec9b;
+            color: #382500;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+
+        /* PHẦN I: 4 LỰA CHỌN */
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 6px 0;
+        }
+
+        .choice-btn {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            padding: 14px 18px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: calc(1.08rem * var(--ui-scale));
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.48;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--sidebar-bg);
+            background-color: #f8f9ff;
+        }
+
+        .choice-btn.selected {
+            background-color: #eeeaff;
+            border-color: var(--sidebar-active);
+            color: var(--sidebar-active);
+        }
+
+        .choice-btn.revealed-correct {
+            border: 2.5px solid #157347 !important;
+            background: #e3f7eb !important;
+            color: #0f4c2e !important;
+        }
+
+        .choice-btn.revealed-wrong {
+            border: 2.5px solid #c0392b !important;
+            background: #fff0f1 !important;
+            color: #7a141e !important;
+        }
+
+        .choice-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        .choice-btn.selected .choice-letter { background-color: var(--sidebar-active); color: #ffffff; }
+        .choice-btn.revealed-correct .choice-letter { background-color: #157347; color: #ffffff; }
+        .choice-btn.revealed-wrong .choice-letter { background-color: #c0392b; color: #ffffff; }
+
+        /* PHẦN II: ĐÚNG / SAI 4 Ý CHUẨN BỘ GD&ĐT 2025 */
+        .tf-list {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tf-statement-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
+            flex-wrap: wrap;
+        }
+
+        .tf-statement-row.row-correct { background: #e3f7eb; border-color: #157347; }
+        .tf-statement-row.row-wrong { background: #fff0f1; border-color: #c0392b; }
+
+        .tf-statement-text {
+            flex: 1 1 320px;
+            font-size: calc(1.06rem * var(--ui-scale));
+            line-height: 1.55;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .tf-btn-pair { display: flex; gap: 8px; flex-shrink: 0; }
+
+        .tf-opt-btn {
+            min-width: 84px;
+            padding: 9px 14px;
+            border-radius: 9px;
+            border: 2px solid #94a3b8;
+            background: #ffffff;
+            color: #1e293b;
+            font-weight: 800;
+            font-size: calc(0.96rem * var(--ui-scale));
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tf-opt-btn:hover { border-color: var(--sidebar-bg); background: #eef0ff; }
+        .tf-opt-btn.chosen-true { background: #0d9488; border-color: #0f766e; color: #ffffff; }
+        .tf-opt-btn.chosen-false { background: #dc2626; border-color: #b91c1c; color: #ffffff; }
+
+        .tf-submit-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .tf-rule-note { font-size: 0.88rem; color: #475569; font-weight: 600; }
+
+        /* PHẦN III: TRẢ LỜI NGẮN */
+        .short-answer-container {
+            display: none;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .answer-label { font-size: calc(1.12rem * var(--ui-scale)); font-weight: 800; color: #1e293b; }
+
+        .number-answer {
+            width: 190px;
+            padding: 12px 16px;
+            border: 2.5px solid #94a3b8;
+            border-radius: 10px;
+            font-size: calc(1.28rem * var(--ui-scale));
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 1.5px;
+            outline: none;
+        }
+
+        .number-answer:focus {
+            border-color: var(--sidebar-bg);
+            box-shadow: 0 0 0 3px rgba(64, 62, 145, 0.2);
+        }
+
+        .btn-confirm {
+            background-color: var(--accent-orange);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: calc(1.04rem * var(--ui-scale));
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-confirm:hover { background-color: var(--accent-orange-hover); }
+
+        /* PHẢN HỒI & LỜI GIẢI CHI TIẾT */
+        #practiceFeedback {
+            padding: 16px 20px;
+            border-left: 5px solid var(--sidebar-bg);
+            background: #f0f7ff;
+            color: #16324a;
+            border-radius: 10px;
+            line-height: 1.65;
+            font-size: calc(1.02rem * var(--ui-scale));
+        }
+
+        #practiceFeedback.fb-correct { border-left-color: #157347; background: #eafaf1; color: #0f4c2e; }
+        #practiceFeedback.fb-partial { border-left-color: #d97706; background: #fffbeb; color: #78350f; }
+        #practiceFeedback.fb-wrong { border-left-color: #c0392b; background: #fff5f5; color: #7a141e; }
+        #practiceFeedback ul { padding-left: 20px; margin-top: 8px; }
+        #practiceFeedback li { margin-bottom: 5px; }
+
+        .practice-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1.5px solid var(--border-color);
+        }
+
+        .btn-nav {
+            background-color: #f1f2f6;
+            color: #1e293b;
+            border: 1.5px solid #cbd5e1;
+            padding: 10px 20px;
+            font-weight: 800;
+            font-size: 0.98rem;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            border-color: var(--sidebar-bg);
+        }
+
+        .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover { border-color: var(--sidebar-bg); background: #eef0ff; }
+
+        /* =====================================================================
+           8. BÁO CÁO KẾT QUẢ (DASHBOARD) & VÒNG QUAY MAY MẮN
+           ===================================================================== */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1.5px solid var(--border-color);
+        }
+
+        .stat-value { font-size: 2.25rem; font-weight: 900; color: var(--sidebar-bg); }
+        .stat-value.success { color: #157347; }
+        .stat-value.orange { color: #d35400; }
+        .stat-label { font-size: 0.94rem; color: #475569; font-weight: 700; margin-top: 4px; }
+
+        .part-progress-box {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            border: 1.5px solid var(--border-color);
+        }
+
+        .dashboard-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+        .node-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 9px;
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
+            color: #1e293b;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .node-btn:hover { transform: scale(1.08); }
+        .node-btn.correct { background: var(--success-color); color: #ffffff; border-color: var(--success-color); }
+        .node-btn.partial { background: var(--warning-color); color: #ffffff; border-color: var(--warning-color); }
+        .node-btn.wrong { background: var(--error-color); color: #ffffff; border-color: var(--error-color); }
+
+        .progress-bar-bg {
+            background-color: #dfe6e9;
+            height: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0 20px 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-teal));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* VÒNG QUAY */
+        .wheel-layout {
+            display: flex;
+            gap: 28px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: auto;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: min(400px, 86vw);
+            height: min(400px, 86vw);
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            border: 8px solid #ffffff;
+            display: block;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 16px solid transparent;
+            border-right: 16px solid transparent;
+            border-top: 30px solid var(--accent-red);
+            z-index: 10;
+        }
+
+        .wheel-spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 4px solid var(--sidebar-bg);
+            font-weight: 900;
+            color: var(--sidebar-bg);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            font-size: 1.05rem;
+        }
+
+        /* =====================================================================
+           9. MODALS & TOAST THÔNG BÁO (KHÔNG DÙNG ALERT/CONFIRM/PROMPT)
+           ===================================================================== */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.open { display: flex; }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 28px 32px;
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+            position: relative;
+        }
+
+        .modal-content.modal-xl {
+            max-width: 1080px;
+            text-align: left;
+            align-items: stretch;
+        }
+
+        .modal-content.modal-xl .data-table { font-size: 1.38rem; }
+        .modal-content.modal-xl .data-table th,
+        .modal-content.modal-xl .data-table td {
+            padding: 15px 16px;
+            border: 2.5px solid #1e293b;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: #f1f5f9;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .toast-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            z-index: 120;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: all 0.25s ease;
+        }
+
+        .toast-box.show { opacity: 1; transform: translateY(0); }
+
+        /* =====================================================================
+           10. CHẾ ĐỘ MÁY CHIẾU (PROJECTOR MODE - TƯƠNG PHẢN CAO CỰ LY 4-8M)
+           ===================================================================== */
+        body.projector-mode {
+            --bg-main: #ffffff;
+            --card-bg: #ffffff;
+            --primary-text: #111827;
+            --secondary-text: #111827;
+            --border-color: #1e293b;
+        }
+
+        body.projector-mode .main-content { background-color: #ffffff; }
+        body.projector-mode .view-pane { padding: 18px 34px; }
+        body.projector-mode .content-header { border-bottom: 3px solid #111827; }
+
+        body.projector-mode .slideshow-container,
+        body.projector-mode .question-card,
+        body.projector-mode .data-box,
+        body.projector-mode .home-info-card,
+        body.projector-mode .sgk-box,
+        body.projector-mode .stat-card,
+        body.projector-mode .part-progress-box {
+            border: 2.5px solid #111827;
+            box-shadow: none;
+        }
+
+        body.projector-mode .choice-btn,
+        body.projector-mode .tf-statement-row,
+        body.projector-mode .tf-opt-btn,
+        body.projector-mode .data-table th,
+        body.projector-mode .data-table td,
+        body.projector-mode .number-answer {
+            border-width: 2.5px;
+            border-color: #111827;
+            color: #111827;
+        }
+
+        body.projector-mode .choice-btn { padding: 18px 22px; font-weight: 700; }
+        body.projector-mode .tf-opt-btn { min-width: 102px; padding: 12px 18px; }
+
+        body.projector-mode .slide-body,
+        body.projector-mode .question-text,
+        body.projector-mode .tf-statement-text,
+        body.projector-mode #practiceFeedback {
+            color: #111827;
+        }
+
+        body.projector-mode strong,
+        body.projector-mode sub,
+        body.projector-mode sup { font-weight: 900; }
+
+        /* =====================================================================
+           11. RESPONSIVE MOBILE / TABLET
+           ===================================================================== */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                transform: translateX(0);
+            }
+            .sidebar.collapsed {
+                width: 330px;
+                padding: 18px;
+                transform: translateX(-100%);
+            }
+            .sidebar-overlay.show { display: block; }
+            .choice-grid { grid-template-columns: 1fr; }
+            .view-pane { padding: 14px 16px; }
+            .slide-workspace { padding: 18px; }
+            .question-card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LỚP PHỦ SIDEBAR TRÊN MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+
+    <!-- SIDEBAR BÊN TRÁI -->
+    <aside class="sidebar" id="sidebar">
+        <div class="subject-header">
+            <div class="subject-logo">💧</div>
+            <div class="subject-title-container">
+                <span class="subject-title">HÓA HỌC 10</span>
+                <span class="subject-subtitle">Bài 13. Liên kết hydrogen &amp; van der Waals</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item active" data-pane="pane-home" onclick="switchPane('pane-home', this)">
+                <span class="nav-icon">🏠</span> <span>Trang chủ</span>
+            </div>
+            <div class="nav-item" data-pane="pane-lesson" onclick="switchPane('pane-lesson', this)">
+                <span class="nav-icon">📖</span> <span>Không gian bài học</span>
+            </div>
+            <div class="nav-item" data-pane="pane-glossary" onclick="switchPane('pane-glossary', this)">
+                <span class="nav-icon">🔤</span> <span>Hệ thống từ khóa</span>
+            </div>
+            <div class="nav-item" id="practice-menu-trigger" data-pane="pane-practice" onclick="switchPane('pane-practice', this)">
+                <span class="nav-icon">✍️</span> <span>Không gian luyện tập</span>
+            </div>
+
+            <!-- ACCORDION 3 PHẦN CHUẨN ĐỀ THI TỐT NGHIỆP THPT 2025 -->
+            <div class="practice-submenu" id="practiceSubmenu">
+                <div class="sub-item active" id="sub-part1" onclick="selectPracticePart(1)">
+                    <span>Phần I. Trắc nghiệm 4 lựa chọn</span>
+                    <span class="sub-badge">18 câu</span>
+                </div>
+                <div class="question-dots" id="questionDotsPart1"></div>
+
+                <div class="sub-item" id="sub-part2" onclick="selectPracticePart(2)">
+                    <span>Phần II. Đúng / Sai (4 ý)</span>
+                    <span class="sub-badge">4 câu</span>
+                </div>
+                <div class="question-dots" id="questionDotsPart2"></div>
+
+                <div class="sub-item" id="sub-part3" onclick="selectPracticePart(3)">
+                    <span>Phần III. Trả lời ngắn</span>
+                    <span class="sub-badge">6 câu</span>
+                </div>
+                <div class="question-dots" id="questionDotsPart3"></div>
+            </div>
+
+            <div class="nav-item" data-pane="pane-wheel" onclick="switchPane('pane-wheel', this)">
+                <span class="nav-icon">🎡</span> <span>Vòng quay may mắn</span>
+            </div>
+            <div class="nav-item" data-pane="pane-dashboard" onclick="switchPane('pane-dashboard', this)">
+                <span class="nav-icon">🏆</span> <span>Báo cáo kết quả</span>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-reset" onclick="openResetModal()">Đặt lại toàn bộ luyện tập 🔄</button>
+        </div>
+    </aside>
+
+    <!-- KHU VỰC HIỂN THỊ CHÍNH -->
+    <main class="main-content">
+
+        <!-- BĂNG RÔN GIÁO VIÊN -->
+        <div class="teacher-banner" id="teacherBanner">
+            <span>🔓 <strong>CHẾ ĐỘ GIÁO VIÊN ĐANG BẬT</strong> | Đáp án gợi ý câu hiện tại: <span id="teacherAnswerHint" style="color: #c0392b; font-size: 1.15rem; font-weight: 900;">...</span></span>
+            <button onclick="toggleTeacherMode(false)" style="background: #c0392b; color: #fff; border: none; padding: 5px 12px; border-radius: 6px; font-weight: 800; cursor: pointer;">Đóng</button>
+        </div>
+
+        <!-- HEADER ĐIỀU KHIỂN TRÌNH CHIẾU -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-toggle-sidebar" title="Ẩn / Hiện thanh điều hướng" onclick="toggleSidebar()">☰</button>
+                <h2 id="headerPartTitle">Hóa học 10 - Bài 13: Trang chủ</h2>
+            </div>
+
+            <div class="header-right">
+                <div class="header-progress" id="headerProgress" style="display: none;">Câu 1 / 18</div>
+                <div class="header-score" id="headerScore">Điểm: 0,00 / 10</div>
+
+                <!-- BỘ CHỈNH CỠ CHỮ NHANH A- / 100% / A+ -->
+                <div class="display-toolbar" title="Điều chỉnh cỡ chữ (85% - 170%)">
+                    <button class="font-ctrl-btn" onclick="changeFontScale(-0.1)">A-</button>
+                    <button class="font-scale-readout" id="fontScaleReadout" onclick="resetFontScale()">100%</button>
+                    <button class="font-ctrl-btn" onclick="changeFontScale(0.1)">A+</button>
+                </div>
+
+                <!-- NÚT CHẾ ĐỘ MÁY CHIẾU (PHÍM TẮT P) -->
+                <button class="btn-projector" id="btnProjector" onclick="toggleProjectorMode()" title="Bật/Tắt Chế độ Máy chiếu (Phím tắt P)">
+                    📽️ Máy chiếu (P)
+                </button>
+
+                <!-- NÚT ÂM THANH -->
+                <button class="btn-sound-toggle" id="btnSoundToggle" onclick="toggleMute()" title="Bật / Tắt hiệu ứng âm thanh">🔊</button>
+            </div>
+        </header>
+
+        <!-- ==================== 1. TRANG CHỦ ==================== -->
+        <section id="pane-home" class="view-pane active">
+            <div class="home-view">
+                <div class="home-logo-box">
+                    <span class="home-logo">💧</span>
+                    <span class="home-badge">HÓA HỌC 10 • KẾT NỐI TRI THỨC VỚI CUỘC SỐNG • TRANG 64 – 67</span>
+                </div>
+                <h1 class="home-title">BÀI 13. LIÊN KẾT HYDROGEN VÀ TƯƠNG TÁC VAN DER WAALS</h1>
+
+                <div class="home-warmup">
+                    <strong style="color: #b75b00; font-size: calc(1.08rem * var(--ui-scale));">❓ Câu hỏi mở đầu (SGK trang 64):</strong>
+                    <p style="margin-top: 6px; font-style: italic; font-size: calc(1.06rem * var(--ui-scale)); line-height: 1.65;">
+                        "Ở áp suất khí quyển, nhiệt độ sôi của H<sub>2</sub>O là 100 °C, CH<sub>4</sub> là −161,58 °C, H<sub>2</sub>S là −60,28 °C. Vì sao các chất trên có nhiệt độ sôi khác nhau?"
+                    </p>
+                </div>
+
+                <div class="home-grid">
+                    <div class="home-info-card">
+                        <h3>🎯 Mục tiêu bài học (SGK trang 64)</h3>
+                        <ul>
+                            <li>Trình bày được khái niệm <strong>liên kết hydrogen</strong>. Vận dụng để giải thích sự xuất hiện liên kết hydrogen (với nguyên tố có độ âm điện lớn: <strong>N, O, F</strong>).</li>
+                            <li>Nêu được vai trò, ảnh hưởng của liên kết hydrogen tới <strong>tính chất vật lí của nước</strong>.</li>
+                            <li>Nêu được khái niệm về <strong>tương tác van der Waals</strong> và ảnh hưởng của tương tác này tới nhiệt độ nóng chảy, nhiệt độ sôi của các chất.</li>
+                        </ul>
+                    </div>
+
+                    <div class="home-info-card">
+                        <h3>📽️ Học liệu tương tác &amp; Luyện thi 2025</h3>
+                        <ul>
+                            <li><strong>Chế độ Máy chiếu (phím P):</strong> 1 chạm tự ẩn Sidebar, bật Fullscreen, phóng chữ 135% và tương phản cao giúp cả lớp cách 4–8m nhìn cực nét.</li>
+                            <li><strong>5 Slide bài học + 4 Mô phỏng SVG:</strong> Bám sát từng bảng số liệu (Bảng 13.1, 13.2) và hình vẽ (Hình 13.1 – 13.5) trong SGK.</li>
+                            <li><strong>Luyện tập chuẩn Đề thi TN THPT 2025:</strong> 18 câu trắc nghiệm (4,50đ) + 4 câu Đúng/Sai 4 ý (4,00đ) + 6 câu trả lời ngắn có bảng số liệu (1,50đ).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="home-actions">
+                    <button class="btn-primary-lg" onclick="switchPane('pane-lesson', document.querySelector('[data-pane=pane-lesson]'))">📖 Bắt đầu học bài (5 Slide)</button>
+                    <button class="btn-orange-lg" onclick="switchPane('pane-practice', document.getElementById('practice-menu-trigger'))">✍️ Luyện tập chuẩn Đề thi 2025</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. KHÔNG GIAN BÀI HỌC (5 SLIDE) ==================== -->
+        <section id="pane-lesson" class="view-pane">
+            <div class="slideshow-container">
+                <div class="slideshow-header">
+                    <span class="slideshow-title">BÀI GIẢNG ĐIỆN TỬ: BÀI 13 – LIÊN KẾT HYDROGEN VÀ TƯƠNG TÁC VAN DER WAALS</span>
+                    <div class="slideshow-controls-right">
+                        <button class="btn-speak-slide" id="btnSpeakSlide" onclick="speakCurrentSlide()">🔊 Thuyết minh Slide</button>
+                        <span class="slideshow-index" id="slideIndexLabel">Slide 1 / 5</span>
+                    </div>
+                </div>
+
+                <!-- ĐỒNG HỒ ĐẾM NGƯỢC THẢO LUẬN NHÓM -->
+                <div class="slide-timer-bar">
+                    <div class="timer-display-group">
+                        <span>⏳ Thảo luận nhóm:</span>
+                        <div class="timer-clock" id="slideTimerClock">02:00</div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="timer-preset-btn" onclick="setTimerPreset(1)">1p</button>
+                        <button class="timer-preset-btn" onclick="setTimerPreset(2)">2p</button>
+                        <button class="timer-preset-btn" onclick="setTimerPreset(5)">5p</button>
+                        <button class="timer-preset-btn" onclick="setTimerPreset(10)">10p</button>
+                        <button class="timer-btn timer-btn-start" id="btnStartTimer" onclick="toggleTimer()">▶ Bắt đầu</button>
+                        <button class="timer-btn" onclick="resetTimer()">🔄 Đặt lại</button>
+                    </div>
+                </div>
+
+                <div class="slide-workspace">
+                    <!-- SLIDE 1: MỞ ĐẦU & BẢN CHẤT LIÊN KẾT HYDROGEN (TR.64-65) -->
+                    <div class="slide-content active-slide" id="slide-0">
+                        <h2 class="slide-title">I. Mở đầu &amp; II.1. Bản chất liên kết hydrogen (SGK tr.64 – 65)</h2>
+                        <div class="slide-body">
+                            <div class="sgk-box know">
+                                <div class="sgk-box-title">❓ Câu hỏi mở đầu (tr.64)</div>
+                                <p>Ở áp suất khí quyển, nhiệt độ sôi của <strong>H<sub>2</sub>O là 100 °C</strong>, <strong>CH<sub>4</sub> là −161,58 °C</strong>, <strong>H<sub>2</sub>S là −60,28 °C</strong>. Vì sao các chất trên có nhiệt độ sôi khác nhau?</p>
+                                <button class="btn-reveal-sgk" onclick="toggleAnswerPanel('ans-s1-warmup')">💡 Xem gợi ý trả lời câu hỏi SGK</button>
+                                <div class="sgk-answer-panel" id="ans-s1-warmup">
+                                    Nhiệt độ sôi của các chất phụ thuộc vào <strong>lực tương tác giữa các phân tử</strong>: giữa các phân tử H<sub>2</sub>O có <strong>liên kết hydrogen</strong> bền hơn nên có nhiệt độ sôi cao nhất (100 °C). CH<sub>4</sub> và H<sub>2</sub>S không có liên kết hydrogen mà chỉ có <strong>tương tác van der Waals</strong>; H<sub>2</sub>S có khối lượng phân tử và số electron lớn hơn CH<sub>4</sub> (lại phân cực hơn) nên tương tác van der Waals mạnh hơn, nhiệt độ sôi cao hơn CH<sub>4</sub>.
+                                </div>
+                            </div>
+
+                            <div class="slide-two-col">
+                                <div class="sgk-box">
+                                    <div class="sgk-box-title">I. Mở đầu – Tương tác giữa các phân tử</div>
+                                    <ul>
+                                        <li>Tính chất vật lí của các chất cộng hóa trị được quyết định bởi <strong>lực tương tác giữa các phân tử</strong>, <strong>hình dạng phân tử</strong> và <strong>mức độ phân cực</strong> của liên kết cộng hóa trị trong phân tử.</li>
+                                        <li>Ví dụ thực tế: <strong>Keo dán</strong> gắn các vật với nhau; <strong>bong bóng xà phòng</strong> (tương tác giữa phân tử nước và xà phòng tạo màng mỏng giữ không khí).</li>
+                                        <li>Lực tương tác giữa các phân tử <strong>yếu hơn rất nhiều</strong> so với liên kết ion, liên kết cộng hóa trị hay liên kết kim loại. Hai loại điển hình là <strong>liên kết hydrogen</strong> và <strong>tương tác van der Waals</strong>.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="sgk-box exp">
+                                    <div class="sgk-box-title">II.1. Bản chất của liên kết hydrogen (Hình 13.1)</div>
+                                    <ul>
+                                        <li>Độ âm điện: <strong>H = 2,2</strong>; <strong>N = 3,04</strong>; <strong>O = 3,44</strong>; <strong>F = 3,98</strong>.</li>
+                                        <li>Trong HF, H<sub>2</sub>O, NH<sub>3</sub>, cặp electron dùng chung lệch mạnh về F, O, N tạo vùng điện tích âm (<strong>δ<sup>−</sup></strong>), nguyên tử H rất linh động mang điện tích dương (<strong>δ<sup>+</sup></strong>) đủ lớn để hút cặp electron hóa trị chưa liên kết trên F, O hoặc N của phân tử khác.</li>
+                                        <li>Biểu diễn bằng <strong>dấu ba chấm (···)</strong> giữa các nguyên tử.</li>
+                                    </ul>
+                                    <div style="margin-top:6px;">
+                                        <span class="formula-pill">H<sub>2</sub>N<sup>δ−</sup> ··· H<sup>δ+</sup>–NH<sub>2</sub> (Hình 13.1)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sgk-box green">
+                                <div class="sgk-box-title">✅ Điều kiện cần và đủ &amp; Hai kiểu liên kết hydrogen (Hình 13.2 – tr.65)</div>
+                                <ul>
+                                    <li><strong>Điều kiện 1:</strong> Nguyên tử hydrogen liên kết với các nguyên tử có độ âm điện lớn như <strong>F, O, N</strong>,...</li>
+                                    <li><strong>Điều kiện 2:</strong> Nguyên tử F, O, N,... liên kết với hydrogen phải có <strong>ít nhất một cặp electron hóa trị chưa liên kết</strong>.</li>
+                                    <li><strong>Hai kiểu tạo liên kết (Hình 13.2):</strong>
+                                        <span class="formula-pill">a) Cùng loại: ···O(H)–H ··· O(H)–H···</span>
+                                        <span class="formula-pill">b) Khác loại: ···O(H)–H ··· F–H ··· O(H)–H···</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 2: VAI TRÒ & ẢNH HƯỞNG ĐẾN TÍNH CHẤT VẬT LÍ CỦA NƯỚC (TR.65-66) -->
+                    <div class="slide-content" id="slide-1">
+                        <h2 class="slide-title">II.2. Vai trò &amp; ảnh hưởng của liên kết hydrogen tới nước (SGK tr.65 – 66)</h2>
+                        <div class="slide-body">
+                            <div class="sgk-box exp">
+                                <div class="sgk-box-title">📊 Bảng 13.1. Nhiệt độ nóng chảy và nhiệt độ sôi một số chất (tr.65)</div>
+                                <div class="data-table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Đại lượng</th>
+                                                <th>H<sub>2</sub>O</th>
+                                                <th>H<sub>2</sub>S</th>
+                                                <th>CH<sub>4</sub></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Nhiệt độ nóng chảy (°C)</strong></td>
+                                                <td><strong>0</strong></td>
+                                                <td>−85,6</td>
+                                                <td>−182,5</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Nhiệt độ sôi (°C)</strong></td>
+                                                <td><strong>100</strong></td>
+                                                <td>−60,75</td>
+                                                <td>−161,58</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p style="margin-top:8px;">👉 <strong>Kết luận:</strong> Do ảnh hưởng của <strong>liên kết hydrogen</strong> nên nhiệt độ nóng chảy và nhiệt độ sôi của H<sub>2</sub>O cao hơn nhiều so với H<sub>2</sub>S và CH<sub>4</sub>.</p>
+                            </div>
+
+                            <div class="sgk-box know">
+                                <div class="sgk-box-title">❄️ Em có biết: Cấu trúc nước đá &amp; vai trò sinh học (Hình 13.3 – tr.65)</div>
+                                <ul>
+                                    <li><strong>Nước đá nổi trên nước lỏng:</strong> Nguyên tử O có 2 cặp e chưa liên kết và phân tử H<sub>2</sub>O có 2 nguyên tử H nên <strong>1 phân tử H<sub>2</sub>O tạo tối đa 4 liên kết hydrogen</strong> với 4 phân tử H<sub>2</sub>O xung quanh → tạo <strong>cấu trúc tứ diện</strong> khá <strong>"rỗng"</strong> → nước đá nhẹ hơn nước lỏng.</li>
+                                    <li><strong>Khối lượng riêng nước từ 0 °C đến 4 °C:</strong> Khi tăng từ 0 °C → 4 °C, các cấu trúc tứ diện vỡ một phần, phân tử xếp gần nhau hơn → <strong>khối lượng riêng tăng dần</strong> (đạt cực đại ở 4 °C). Tiếp tục tăng nhiệt độ (&gt; 4 °C), khoảng cách phân tử tăng → khối lượng riêng giảm.</li>
+                                    <li><strong>Vai trò tự nhiên &amp; sinh học:</strong> Giúp nước dâng lên trong <strong>mao quản rễ cây</strong> lên thân và lá; giúp nước <strong>điều hòa nhiệt độ Trái Đất</strong>; tạo <strong>cấu trúc xoắn</strong> của protein, carbohydrate và nucleic acid.</li>
+                                </ul>
+                            </div>
+
+                            <div class="sgk-box green">
+                                <div class="sgk-box-title">📝 Câu hỏi 1 &amp; 2 (SGK trang 66)</div>
+                                <p><strong>1.</strong> Vẽ sơ đồ biểu diễn liên kết hydrogen giữa: a) hai phân tử HF; b) phân tử HF và phân tử NH<sub>3</sub>.<br>
+                                   <strong>2.</strong> Những nguyên tử hydrogen nào trong phân tử ethanol (CH<sub>3</sub>CH<sub>2</sub>OH) <strong>không</strong> tham gia vào liên kết hydrogen? Vì sao?</p>
+                                <button class="btn-reveal-sgk" onclick="toggleAnswerPanel('ans-s2-q12')">💡 Xem gợi ý trả lời câu hỏi SGK</button>
+                                <div class="sgk-answer-panel" id="ans-s2-q12">
+                                    <p><strong>Câu 1:</strong><br>
+                                    a) Giữa hai phân tử HF: <span class="formula-pill">H<sup>δ+</sup>–F<sup>δ−</sup> ··· H<sup>δ+</sup>–F<sup>δ−</sup></span><br>
+                                    b) Giữa HF và NH<sub>3</sub>: <span class="formula-pill">H–F<sup>δ−</sup> ··· H<sup>δ+</sup>–NH<sub>2</sub></span> hoặc <span class="formula-pill">F–H<sup>δ+</sup> ··· N<sup>δ−</sup>H<sub>3</sub></span></p>
+                                    <p style="margin-top:8px;"><strong>Câu 2:</strong> <strong>5 nguyên tử H</strong> trong gốc hydrocarbon (CH<sub>3</sub>CH<sub>2</sub>−) <strong>không</strong> tham gia liên kết hydrogen vì chúng liên kết với nguyên tử C (độ âm điện nhỏ ≈ 2,55 nên liên kết C–H hầu như không phân cực, H không đủ linh động). Chỉ có <strong>1 nguyên tử H</strong> trong nhóm <strong>–OH</strong> (liên kết với O có độ âm điện lớn 3,44) mới tham gia liên kết hydrogen.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 3: KHÁI NIỆM & SỰ HÌNH THÀNH TƯƠNG TÁC VAN DER WAALS (TR.66) -->
+                    <div class="slide-content" id="slide-2">
+                        <h2 class="slide-title">III.1. Khái niệm &amp; Sự hình thành tương tác van der Waals (SGK tr.66)</h2>
+                        <div class="slide-body">
+                            <div class="sgk-box">
+                                <div class="sgk-box-title">🧪 1. Khái niệm tương tác van der Waals</div>
+                                <ul>
+                                    <li>Cùng là phân tử <strong>không phân cực</strong>, ở nhiệt độ phòng: fluorine (F<sub>2</sub>), chlorine (Cl<sub>2</sub>) là <strong>chất khí</strong>, còn bromine (Br<sub>2</sub>) là <strong>chất lỏng</strong> → giữa các phân tử Br<sub>2</sub> tồn tại một tương tác yếu giữ chúng ở trạng thái lỏng.</li>
+                                    <li>Các <strong>khí hiếm</strong> (Ne, Ar,...) tồn tại dạng nguyên tử độc lập nhưng ở nhiệt độ thấp vẫn <strong>hóa lỏng được</strong> nhờ tồn tại tương tác yếu giữa các nguyên tử.</li>
+                                    <li><strong>Định nghĩa:</strong> <em>Tương tác van der Waals là tương tác tĩnh điện lưỡng cực – lưỡng cực giữa các nguyên tử hay phân tử.</em></li>
+                                </ul>
+                            </div>
+
+                            <div class="sgk-box know">
+                                <div class="sgk-box-title">⚡ Em có biết: Sự hình thành tương tác van der Waals (Hình 13.4 – tr.66)</div>
+                                <ul>
+                                    <li><strong>Ở chất cộng hóa trị phân cực:</strong> Tương tác van der Waals thể hiện rõ do phân tử có <strong>cấu tạo lưỡng cực vĩnh cửu</strong> (một đầu mang δ<sup>−</sup>, một đầu mang δ<sup>+</sup>).</li>
+                                    <li><strong>Ở nguyên tử khí hiếm hoặc chất cộng hóa trị không phân cực:</strong> Do <strong>đám mây electron luôn chuyển động</strong> nên tại một thời điểm bất kì có thể lệch về một phía, tạo ra một <strong>lưỡng cực tạm thời</strong> (δ<sup>+</sup>, δ<sup>−</sup>).</li>
+                                    <li>Lưỡng cực tạm thời trên nguyên tử/phân tử này lại làm lệch đám mây electron của nguyên tử/phân tử bên cạnh tạo ra <strong>lưỡng cực cảm ứng</strong>. Lực hút tĩnh điện giữa đầu δ<sup>−</sup> của lưỡng cực này với đầu δ<sup>+</sup> của lưỡng cực kia chính là <strong>tương tác van der Waals</strong>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 4: ẢNH HƯỞNG CỦA TƯƠNG TÁC VAN DER WAALS (TR.66-67) -->
+                    <div class="slide-content" id="slide-3">
+                        <h2 class="slide-title">III.2. Ảnh hưởng của tương tác van der Waals &amp; Tổng kết (SGK tr.66 – 67)</h2>
+                        <div class="slide-body">
+                            <div class="sgk-box exp">
+                                <div class="sgk-box-title">📊 Ví dụ 1 &amp; Bảng 13.2. Dãy halogen – Tương tác van der Waals tăng theo số electron</div>
+                                <div class="data-table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Halogen</th>
+                                                <th>F<sub>2</sub></th>
+                                                <th>Cl<sub>2</sub></th>
+                                                <th>Br<sub>2</sub></th>
+                                                <th>I<sub>2</sub></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td><strong>Khối lượng mol (g/mol)</strong></td><td>38,0</td><td>70,9</td><td>159,8</td><td>253,8</td></tr>
+                                            <tr><td><strong>Tổng số electron</strong></td><td>18</td><td>34</td><td>70</td><td>106</td></tr>
+                                            <tr><td><strong>Nhiệt độ sôi (°C)</strong></td><td>−188,1</td><td>−34,1</td><td>59,2</td><td>185,5</td></tr>
+                                            <tr><td><strong>Nhiệt độ nóng chảy (°C)</strong></td><td>−219,6</td><td>−101,0</td><td>−7,3</td><td>113,6</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p style="margin-top:8px;">👉 Trong dãy halogen, tương tác van der Waals <strong>tăng theo sự tăng của số electron (và proton) / khối lượng phân tử</strong> → làm tăng nhiệt độ nóng chảy và nhiệt độ sôi.</p>
+                            </div>
+
+                            <div class="slide-two-col">
+                                <div class="sgk-box">
+                                    <div class="sgk-box-title">🧬 Ví dụ 2 (Hình 13.5) &amp; Câu hỏi 3 (tr.67)</div>
+                                    <p><strong>Pentane vs Neopentane (C<sub>5</sub>H<sub>12</sub>):</strong> Đồng phân mạch không nhánh <strong>pentane (t<sub>s</sub> = 36 °C)</strong> có nhiệt độ sôi cao hơn đồng phân mạch nhánh <strong>neopentane (t<sub>s</sub> = 9,5 °C)</strong> do <strong>diện tích tiếp xúc</strong> giữa các phân tử pentane lớn hơn nhiều → cần nhiều năng lượng hơn để phá vỡ lực liên phân tử.</p>
+                                    <p style="margin-top:6px;"><em>Câu hỏi 3 (tr.67):</em> Hãy giải thích sự khác nhau về nhiệt độ sôi của <strong>butane</strong> và <strong>isobutane</strong>.</p>
+                                    <button class="btn-reveal-sgk" onclick="toggleAnswerPanel('ans-s4-q3')">💡 Xem gợi ý trả lời câu hỏi SGK</button>
+                                    <div class="sgk-answer-panel" id="ans-s4-q3">
+                                        Butane (CH<sub>3</sub>–CH<sub>2</sub>–CH<sub>2</sub>–CH<sub>3</sub>, t<sub>s</sub> = −0,5 °C) và isobutane (CH<sub>3</sub>–CH(CH<sub>3</sub>)–CH<sub>3</sub>, t<sub>s</sub> = −11,7 °C) đều có công thức C<sub>4</sub>H<sub>10</sub> (cùng M và số electron). Tuy nhiên, <strong>butane có mạch không phân nhánh nên diện tích tiếp xúc giữa các phân tử lớn hơn</strong> isobutane mạch nhánh gọn hơn → tương tác van der Waals giữa các phân tử butane mạnh hơn → nhiệt độ sôi cao hơn.
+                                    </div>
+                                </div>
+
+                                <div class="sgk-box know">
+                                    <div class="sgk-box-title">📦 Em có biết &amp; Em đã học (tr.67)</div>
+                                    <ul>
+                                        <li><strong>Polyethene (chất rắn) vs Ethene (chất khí):</strong> Khối lượng phân tử polyethene lớn hơn rất nhiều → tổng tương tác van der Waals rất lớn → polyethene là chất rắn ở điều kiện thường.</li>
+                                        <li><strong>Em đã học:</strong> Liên kết hydrogen làm tăng t<sub>nc</sub>, t<sub>s</sub> của nước; tương tác van der Waals là tương tác tĩnh điện lưỡng cực – lưỡng cực làm tăng t<sub>nc</sub>, t<sub>s</sub> của các chất.</li>
+                                        <li><strong>Em có thể:</strong> So sánh được tính chất vật lí giữa các phân tử dựa vào liên kết hydrogen và tương tác van der Waals.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 5: PHÒNG THÍ NGHIỆM ẢO & 4 MÔ PHỎNG SVG TƯƠNG TÁC -->
+                    <div class="slide-content" id="slide-4">
+                        <h2 class="slide-title">🔬 Phòng Mô Phỏng Trực Quan SVG (4 Mô Hình Tương Tác)</h2>
+                        <div class="slide-body">
+                            <div class="simulation-container">
+                                <div class="sim-btn-group">
+                                    <button class="btn-sim-option active" onclick="runSim(1)">💧 1. Liên kết Hydrogen</button>
+                                    <button class="btn-sim-option" onclick="runSim(2)">❄️ 2. Nước đá (0°C) vs Nước (4°C)</button>
+                                    <button class="btn-sim-option" onclick="runSim(3)">⚡ 3. Lưỡng cực tạm thời (H.13.4)</button>
+                                    <button class="btn-sim-option" onclick="runSim(4)">🧬 4. Pentane vs Neopentane (H.13.5)</button>
+                                </div>
+
+                                <div class="sim-visual-box" id="simVisual"></div>
+                                <div class="sim-action-bar" id="simActionBar"></div>
+                                <div class="sim-desc-box" id="simDesc"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slideshow-footer">
+                    <button class="slide-nav-btn" onclick="navigateSlide(-1)">◀ Slide Trước</button>
+                    <div class="slide-progress-wrapper">
+                        <input type="range" class="slide-progress-bar" id="slideProgressBar" min="0" max="4" value="0" oninput="jumpToSlide(this.value)">
+                    </div>
+                    <button class="slide-nav-btn" onclick="navigateSlide(1)">Slide Tiếp ▶</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3. HỆ THỐNG TỪ KHÓA (8 THẺ LẬT 3D) ==================== -->
+        <section id="pane-glossary" class="view-pane">
+            <h2 style="margin-bottom: 18px; color: var(--sidebar-bg); font-size: calc(1.48rem * var(--ui-scale)); font-weight: 900; border-left: 6px solid var(--accent-orange); padding-left: 14px;">
+                Hệ Thống 8 Từ Khóa Cốt Lõi – Chạm Thẻ Để Lật 3D
+            </h2>
+            <div class="keyword-grid" id="glossaryGrid"></div>
+        </section>
+
+        <!-- ==================== 4. KHÔNG GIAN LUYỆN TẬP (CHUẨN ĐỀ THI 2025) ==================== -->
+        <section id="pane-practice" class="view-pane">
+            <div class="practice-layout" id="practiceLayout">
+
+                <!-- CỘT TRÁI: BẢNG SỐ LIỆU PHẦN III -->
+                <div class="data-box" id="dataBox">
+                    <div class="data-box-header">
+                        <div class="data-title" id="dataTitle">BẢNG SỐ LIỆU THỰC NGHIỆM</div>
+                        <button class="btn-zoom-table" onclick="openTableZoomModal()">🔍 Phóng to bảng số liệu</button>
+                    </div>
+                    <div class="data-table-container" id="dataTableContainer"></div>
+                    <div class="data-source">Nguồn: SGK Hóa học 10 – Kết nối tri thức với cuộc sống (trang 64 – 67)</div>
+                </div>
+
+                <!-- CỘT PHẢI: THẺ CÂU HỎI -->
+                <div class="question-card">
+                    <div class="question-top-row">
+                        <div class="question-badge" id="questionBadge">Phần I • Câu 1 / 18</div>
+                        <button type="button" class="keyword-toggle" id="stemToggle" aria-pressed="false" onclick="togglePracticeKeywords()">🔍 Hiện từ khóa</button>
+                    </div>
+
+                    <div class="question-text" id="questionText">Đang tải câu hỏi...</div>
+
+                    <!-- PHẦN I: TRẮC NGHIỆM 4 LỰA CHỌN -->
+                    <div class="choice-grid" id="multipleChoiceArea">
+                        <button class="choice-btn" onclick="selectChoice('A')"><span class="choice-letter">A</span><span class="choice-val" id="choiceA"></span></button>
+                        <button class="choice-btn" onclick="selectChoice('B')"><span class="choice-letter">B</span><span class="choice-val" id="choiceB"></span></button>
+                        <button class="choice-btn" onclick="selectChoice('C')"><span class="choice-letter">C</span><span class="choice-val" id="choiceC"></span></button>
+                        <button class="choice-btn" onclick="selectChoice('D')"><span class="choice-letter">D</span><span class="choice-val" id="choiceD"></span></button>
+                    </div>
+
+                    <!-- PHẦN II: ĐÚNG / SAI 4 Ý CHUẨN BỘ GD&ĐT 2025 -->
+                    <div class="tf-list" id="trueFalseArea">
+                        <div id="tfStatementsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+                        <div class="tf-submit-bar">
+                            <span class="tf-rule-note">📌 Thang điểm 2025: 1 ý đúng = 0,10đ | 2 ý = 0,25đ | 3 ý = 0,50đ | 4 ý = 1,00đ</span>
+                            <button class="btn-confirm" onclick="submitTFQuestion()">✅ Kiểm tra đáp án câu này</button>
+                        </div>
+                    </div>
+
+                    <!-- PHẦN III: TRẢ LỜI NGẮN -->
+                    <div class="short-answer-container" id="shortAnswerArea">
+                        <label class="answer-label" for="numberAnswer">Đáp án số:</label>
+                        <input class="number-answer" id="numberAnswer" type="text" maxlength="8" inputmode="decimal" autocomplete="off" placeholder="VD: 1,78" onkeydown="if(event.key==='Enter') verifyShortAnswer()">
+                        <button class="btn-confirm" onclick="verifyShortAnswer()">Xác nhận</button>
+                    </div>
+
+                    <!-- PHẢN HỒI & LỜI GIẢI CHI TIẾT -->
+                    <div id="practiceFeedback" hidden></div>
+
+                    <!-- THANH ĐIỀU HƯỚNG -->
+                    <div class="practice-toolbar">
+                        <button class="btn-nav" id="btnPrev" onclick="navigateQuestion(-1)">◀ Câu trước</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="icon-btn" title="Đọc to câu hỏi" onclick="readQuestionAudio()">🔊</button>
+                            <button class="icon-btn" title="Làm lại câu này" onclick="resetCurrentQuestion()">🔄</button>
+                            <button class="icon-btn" title="Chế độ Giáo viên (PIN 1234)" onclick="openTeacherModal()">🔑</button>
+                        </div>
+                        <button class="btn-nav" id="btnNext" onclick="navigateQuestion(1)">Câu tiếp ▶</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 5. VÒNG QUAY MAY MẮN ==================== -->
+        <section id="pane-wheel" class="view-pane">
+            <div class="wheel-layout">
+                <div class="wheel-wrapper">
+                    <canvas id="wheelCanvas" width="420" height="420"></canvas>
+                    <div class="wheel-pointer"></div>
+                    <button class="wheel-spin-btn" onclick="spinWheel()">QUAY</button>
+                </div>
+
+                <div style="background:#fff; border-radius:16px; padding:22px; box-shadow:var(--shadow); border:1.5px solid var(--border-color); width:min(360px, 90vw); display:flex; flex-direction:column; gap:12px;">
+                    <h3 style="color:var(--sidebar-bg); font-size:1.2rem; font-weight:800;">🎡 Danh sách học sinh</h3>
+                    <p style="font-size:0.88rem; color:#475569;">Nhập mỗi tên 1 dòng (tự động lưu offline):</p>
+                    <textarea id="namesInput" rows="8" style="width:100%; border:1.5px solid #cbd5e1; border-radius:10px; padding:10px; font-size:0.98rem; outline:none;" oninput="updateNamesFromInput()"></textarea>
+                    <button onclick="resetWheelNames()" style="background:#f1f2f6; border:1.5px solid #cbd5e1; padding:9px; border-radius:8px; font-weight:700; cursor:pointer;">Khôi phục danh sách mẫu</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 6. BÁO CÁO KẾT QUẢ (DASHBOARD) ==================== -->
+        <section id="pane-dashboard" class="view-pane">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-value success" id="dashTotalScore">0,00 / 10</div>
+                    <div class="stat-label">Tổng điểm (Thang 10,00)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="dashScoreP1">0,00 / 4,50</div>
+                    <div class="stat-label">Phần I (18 câu × 0,25đ)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value orange" id="dashScoreP2">0,00 / 4,00</div>
+                    <div class="stat-label">Phần II (4 câu Đ/S × 1,0đ)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="dashScoreP3">0,00 / 1,50</div>
+                    <div class="stat-label">Phần III (6 câu × 0,25đ)</div>
+                </div>
+            </div>
+
+            <div class="part-progress-box">
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:#1e293b;">
+                    <span>Tiến độ hoàn thành toàn đề (<span id="statTotalSolved">0 / 28</span> câu):</span>
+                    <span id="statProgressPct">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="statProgressBar"></div></div>
+
+                <h3 style="color:var(--sidebar-bg); margin-bottom:10px;">Trạng thái 28 câu (Bấm vào số câu để ôn tập trực tiếp):</h3>
+                <div style="margin-bottom:14px;">
+                    <strong style="color:#334155;">Phần I – Trắc nghiệm 4 lựa chọn (18 câu)</strong>
+                    <div class="dashboard-grid" id="dashGridPart1"></div>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <strong style="color:#334155;">Phần II – Đúng / Sai 4 ý (4 câu)</strong>
+                    <div class="dashboard-grid" id="dashGridPart2"></div>
+                </div>
+                <div>
+                    <strong style="color:#334155;">Phần III – Trả lời ngắn (6 câu)</strong>
+                    <div class="dashboard-grid" id="dashGridPart3"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== CÁC MODAL TÙY CHỈNH ==================== -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('infoModal')">✕</button>
+            <div style="font-size:3.4rem;" id="infoModalEmoji">🎡</div>
+            <h3 style="font-size:1.55rem; font-weight:900; color:var(--sidebar-bg);" id="infoModalTitle">THÔNG BÁO</h3>
+            <div style="font-size:1.12rem; line-height:1.6; color:#1e293b;" id="infoModalBody"></div>
+            <button class="btn-confirm" onclick="closeModal('infoModal')">Đóng</button>
+        </div>
+    </div>
+
+    <div class="modal" id="tableZoomModal">
+        <div class="modal-content modal-xl">
+            <button class="modal-close" onclick="closeModal('tableZoomModal')">✕</button>
+            <h3 style="font-size:1.5rem; font-weight:900; color:var(--sidebar-bg);">📊 BẢNG SỐ LIỆU THỰC NGHIỆM (PHÓNG TO)</h3>
+            <div id="zoomedTableHolder" style="overflow-x:auto; margin-top:8px;"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="teacherModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('teacherModal')">✕</button>
+            <div style="font-size:2.8rem;">🔑</div>
+            <h3 style="font-size:1.4rem; font-weight:900; color:var(--sidebar-bg);">CHẾ ĐỘ GIÁO VIÊN</h3>
+            <p style="color:#475569;">Nhập mã PIN bảo mật (mặc định: <strong>1234</strong>) để mở đáp án gợi ý.</p>
+            <input type="password" id="teacherPinInput" maxlength="8" placeholder="Nhập mã PIN..." style="width:200px; padding:10px 14px; border:2px solid #94a3b8; border-radius:10px; text-align:center; font-size:1.2rem; font-weight:800;" onkeydown="if(event.key==='Enter') confirmTeacherPin()">
+            <div id="teacherPinError" style="color:#c0392b; font-weight:700; display:none;">Mã PIN không chính xác!</div>
+            <button class="btn-confirm" onclick="confirmTeacherPin()">Mở khóa</button>
+        </div>
+    </div>
+
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('resetModal')">✕</button>
+            <div style="font-size:2.8rem;">🔄</div>
+            <h3 style="font-size:1.4rem; font-weight:900; color:#c0392b;">ĐẶT LẠI TOÀN BỘ LUYỆN TẬP?</h3>
+            <p style="color:#475569;">Toàn bộ đáp án và điểm số của 28 câu hỏi sẽ được xóa sạch để bắt đầu lượt luyện tập mới.</p>
+            <div style="display:flex; gap:12px;">
+                <button class="btn-nav" onclick="closeModal('resetModal')">Hủy bỏ</button>
+                <button class="btn-confirm" style="background:#c0392b;" onclick="confirmResetPractice()">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-box" id="toastBox"></div>
+
+    <script>
+        /* =====================================================================
+           1. DỮ LIỆU 8 THẺ TỪ KHÓA LẬT 3D (BÁM SÁT SGK HÓA 10 BÀI 13)
+           ===================================================================== */
+        const glossaryCards = [
+            { icon: "💧", term: "Liên kết hydrogen (···)", def: "Là tương tác yếu hình thành giữa nguyên tử H linh động (mang δ+) đã liên kết với nguyên tử có độ âm điện lớn (F, O, N) với cặp electron hóa trị chưa liên kết trên nguyên tử F, O, N (mang δ−) của phân tử khác. Biểu diễn bằng dấu ba chấm (···)." },
+            { icon: "🔑", term: "Điều kiện tạo liên kết hydrogen", def: "(1) Nguyên tử hydrogen liên kết với nguyên tử có độ âm điện lớn như F, O, N,... (2) Nguyên tử F, O, N,... liên kết với hydrogen phải có ít nhất một cặp electron hóa trị chưa liên kết." },
+            { icon: "📏", term: "Độ âm điện (H, N, O, F)", def: "Các giá trị độ âm điện trong SGK tr.64: H = 2,2; N = 3,04; O = 3,44; F = 3,98. Chênh lệch độ âm điện lớn làm liên kết phân cực mạnh, tạo H linh động mang δ+." },
+            { icon: "❄️", term: "Cấu trúc tứ diện của nước đá", def: "Mỗi phân tử H₂O có 2 nguyên tử H và 2 cặp e chưa liên kết trên O nên tạo tối đa 4 liên kết hydrogen với 4 phân tử H₂O xung quanh thành cấu trúc tứ diện khá rỗng → nước đá nhẹ hơn và nổi trên nước lỏng." },
+            { icon: "🧲", term: "Tương tác van der Waals", def: "Là tương tác tĩnh điện lưỡng cực – lưỡng cực giữa các nguyên tử hay phân tử. Tồn tại ở cả chất phân cực, không phân cực (Br₂, I₂) và khí hiếm (Ne, Ar)." },
+            { icon: "⚡", term: "Lưỡng cực tạm thời & cảm ứng", def: "Ở khí hiếm hoặc phân tử không phân cực, đám mây electron luôn chuyển động tạo ra lưỡng cực tạm thời (δ+, δ−), kéo theo cảm ứng lưỡng cực ở nguyên tử/phân tử bên cạnh tạo lực hút van der Waals." },
+            { icon: "📈", term: "Ảnh hưởng số e & khối lượng mol", def: "Khi số electron (và proton) cùng khối lượng phân tử tăng (dãy F₂ → Cl₂ → Br₂ → I₂, hay từ ethene lên polyethene), tương tác van der Waals tăng mạnh → nhiệt độ nóng chảy, nhiệt độ sôi tăng." },
+            { icon: "🧬", term: "Diện tích tiếp xúc phân tử", def: "Với các đồng phân cùng công thức phân tử, mạch không nhánh có diện tích tiếp xúc lớn hơn mạch nhánh → tương tác van der Waals mạnh hơn (VD: pentane 36 °C > neopentane 9,5 °C; butane > isobutane)." }
+        ];
+
+        /* =====================================================================
+           2. NGÂN HÀNG ĐỀ LUYỆN TẬP CHUẨN ĐỀ THI TỐT NGHIỆP THPT 2025
+              - Phần I: 18 câu trắc nghiệm nhiều lựa chọn (4,50 điểm)
+              - Phần II: 4 câu Đúng / Sai 4 ý (4,00 điểm)
+              - Phần III: 6 câu trả lời ngắn có bảng số liệu (1,50 điểm)
+           ===================================================================== */
+        const quizData = {
+            1: [
+                {
+                    q: "Lực tương tác giữa các phân tử yếu hơn rất nhiều so với nhóm liên kết hóa học nào sau đây?",
+                    keywords: ["Lực tương tác giữa các phân tử", "yếu hơn rất nhiều"],
+                    choices: ["Liên kết ion, liên kết cộng hóa trị, liên kết kim loại.", "Liên kết hydrogen và tương tác van der Waals.", "Lực hút lưỡng cực tạm thời và lưỡng cực cảm ứng.", "Chỉ yếu hơn liên kết hydrogen."],
+                    optionKeywords: ["Liên kết ion, liên kết cộng hóa trị, liên kết kim loại", "liên kết hydrogen", "lưỡng cực tạm thời", "chỉ yếu hơn"],
+                    answer: "A",
+                    explain: "SGK tr.64 nêu rõ: Lực tương tác giữa các phân tử yếu hơn rất nhiều so với lực liên kết ion, liên kết cộng hóa trị hay liên kết kim loại."
+                },
+                {
+                    q: "Hiện tượng bong bóng xà phòng tạo thành màng mỏng giữ được không khí bên trong hoặc keo dán gắn các vật với nhau thể hiện vai trò của loại tương tác nào?",
+                    keywords: ["bong bóng xà phòng", "keo dán", "tương tác"],
+                    choices: ["Liên kết ion giữa các cation và anion.", "Tương tác giữa các phân tử.", "Liên kết kim loại trong mạng tinh thể.", "Phản ứng hạt nhân tỏa nhiệt."],
+                    optionKeywords: ["Liên kết ion", "Tương tác giữa các phân tử", "Liên kết kim loại", "Phản ứng hạt nhân"],
+                    answer: "B",
+                    explain: "Keo dán và bong bóng xà phòng là hai ví dụ kinh điển (SGK tr.64) minh họa cho lực tương tác giữa các phân tử."
+                },
+                {
+                    q: "Liên kết hydrogen thường được biểu diễn bằng kí hiệu nào sau đây giữa các nguyên tử?",
+                    keywords: ["Liên kết hydrogen", "biểu diễn", "kí hiệu"],
+                    choices: ["Một nét gạch liền (—).", "Hai nét gạch song song (=).", "Dấu ba chấm (...).", "Mũi tên hai chiều (⇌)."],
+                    optionKeywords: ["nét gạch liền", "Hai nét gạch", "Dấu ba chấm (...)", "Mũi tên"],
+                    answer: "C",
+                    explain: "Liên kết hydrogen thường được biểu diễn bằng dấu ba chấm (...) giữa nguyên tử H mang δ⁺ và nguyên tử có độ âm điện lớn mang δ⁻ (Hình 13.1)."
+                },
+                {
+                    q: "Nguyên tử hydrogen dễ tạo liên kết hydrogen khi liên kết cộng hóa trị với các nguyên tố có độ âm điện lớn nào sau đây?",
+                    keywords: ["độ âm điện lớn", "liên kết hydrogen"],
+                    choices: ["F, O, N.", "C, Si, P.", "S, Se, Te.", "Na, K, Ca."],
+                    optionKeywords: ["F, O, N", "C, Si, P", "S, Se, Te", "Na, K, Ca"],
+                    answer: "A",
+                    explain: "Ba nguyên tố điển hình có độ âm điện lớn tạo liên kết hydrogen là F (3,98), O (3,44) và N (3,04)."
+                },
+                {
+                    q: "Điều kiện cần và đủ về nguyên tử F, O, N khi tham gia tạo liên kết hydrogen là gì?",
+                    keywords: ["Điều kiện cần và đủ", "nguyên tử F, O, N"],
+                    choices: ["Phải có ít nhất một cặp electron hóa trị chưa liên kết.", "Phải có bán kính nguyên tử lớn hơn 200 pm.", "Phải tạo được ít nhất 4 liên kết cộng hóa trị đơn.", "Không còn cặp electron hóa trị tự do nào."],
+                    optionKeywords: ["ít nhất một cặp electron hóa trị chưa liên kết", "bán kính nguyên tử", "4 liên kết", "Không còn cặp electron"],
+                    answer: "A",
+                    explain: "Theo SGK tr.65, nguyên tử F, O, N liên kết với H phải có ít nhất một cặp electron hóa trị chưa liên kết để hút nguyên tử H linh động (δ⁺)."
+                },
+                {
+                    q: "Trong các phân tử sau: CH₄, H₂S, NH₃, HCl, chất nào tạo được liên kết hydrogen giữa các phân tử?",
+                    keywords: ["CH₄, H₂S, NH₃, HCl", "tạo được liên kết hydrogen"],
+                    choices: ["CH₄.", "H₂S.", "NH₃.", "HCl."],
+                    optionKeywords: ["CH₄", "H₂S", "NH₃", "HCl"],
+                    answer: "C",
+                    explain: "NH₃ có nguyên tử N độ âm điện lớn (3,04) và còn 1 cặp electron chưa liên kết nên tạo được liên kết hydrogen giữa các phân tử (Hình 13.1)."
+                },
+                {
+                    q: "Vì sao nhiệt độ sôi của H₂O (100 °C) cao hơn rất nhiều so với H₂S (−60,75 °C) mặc dù khối lượng phân tử H₂O nhỏ hơn H₂S?",
+                    keywords: ["nhiệt độ sôi của H₂O (100 °C)", "cao hơn rất nhiều", "H₂S"],
+                    choices: ["Vì phân tử H₂O có khối lượng mol lớn hơn H₂S.", "Vì giữa các phân tử H₂O có liên kết hydrogen còn giữa các phân tử H₂S không có.", "Vì liên kết O–H là liên kết ion bền vững.", "Vì H₂S là phân tử hoàn toàn không phân cực."],
+                    optionKeywords: ["khối lượng mol lớn hơn", "giữa các phân tử H₂O có liên kết hydrogen", "liên kết ion", "không phân cực"],
+                    answer: "B",
+                    explain: "Giữa các phân tử H₂O hình thành liên kết hydrogen bền chặt hơn nhiều so với tương tác van der Waals giữa các phân tử H₂S."
+                },
+                {
+                    q: "Trong mạng tinh thể nước đá (Hình 13.3), mỗi phân tử H₂O tạo được tối đa bao nhiêu liên kết hydrogen với các phân tử H₂O xung quanh?",
+                    keywords: ["mạng tinh thể nước đá", "tối đa bao nhiêu liên kết hydrogen"],
+                    choices: ["1.", "2.", "3.", "4."],
+                    optionKeywords: ["1", "2", "3", "4"],
+                    answer: "D",
+                    explain: "Nguyên tử O còn 2 cặp e chưa liên kết (tạo 2 LK hydrogen) và 2 nguyên tử H (tạo 2 LK hydrogen) → mỗi phân tử H₂O tạo tối đa 4 liên kết hydrogen dạng tứ diện."
+                },
+                {
+                    q: "Nguyên nhân khiến nước đá nhẹ hơn nước lỏng và có thể nổi một phần trên bề mặt nước lỏng là gì?",
+                    keywords: ["nước đá nhẹ hơn nước lỏng", "nổi"],
+                    choices: ["Trong nước đá không còn liên kết cộng hóa trị O–H.", "Mạng tinh thể nước đá có cấu trúc tứ diện khá rỗng do liên kết hydrogen.", "Phân tử nước đá bị phân hủy thành khí H₂ và O₂.", "Khối lượng mol của nước đá nhỏ hơn nước lỏng."],
+                    optionKeywords: ["không còn liên kết", "cấu trúc tứ diện khá rỗng", "phân hủy", "Khối lượng mol"],
+                    answer: "B",
+                    explain: "Các liên kết hydrogen sắp xếp phân tử nước đá theo mạng tứ diện khá rỗng → thể tích lớn hơn cùng một khối lượng nước lỏng nên nước đá nhẹ hơn và nổi."
+                },
+                {
+                    q: "Khi tăng nhiệt độ của nước từ 0 °C lên 4 °C, khối lượng riêng của nước thay đổi như thế nào?",
+                    keywords: ["từ 0 °C lên 4 °C", "khối lượng riêng của nước"],
+                    choices: ["Giảm mạnh ngay lập tức.", "Không thay đổi trong suốt khoảng nhiệt độ này.", "Tăng dần do cấu trúc tứ diện bị phá vỡ một phần, các phân tử sắp xếp gần nhau hơn.", "Bằng 0 ở nhiệt độ 4 °C."],
+                    optionKeywords: ["Giảm mạnh", "Không thay đổi", "Tăng dần do cấu trúc tứ diện bị phá vỡ một phần", "Bằng 0"],
+                    answer: "C",
+                    explain: "Từ 0 °C đến 4 °C, cấu trúc tứ diện rỗng bị phá vỡ một phần làm các phân tử nước xếp gần nhau hơn nên khối lượng riêng tăng dần (đạt cực đại ở 4 °C)."
+                },
+                {
+                    q: "Trong phân tử ethanol (CH₃CH₂OH), có bao nhiêu nguyên tử hydrogen có thể tham gia tạo liên kết hydrogen?",
+                    keywords: ["ethanol (CH₃CH₂OH)", "bao nhiêu nguyên tử hydrogen", "tham gia"],
+                    choices: ["1.", "2.", "5.", "6."],
+                    optionKeywords: ["1", "2", "5", "6"],
+                    answer: "A",
+                    explain: "Chỉ có duy nhất 1 nguyên tử H trong nhóm –OH (gắn với O độ âm điện lớn) tham gia tạo liên kết hydrogen; 5 nguyên tử H gắn với C không tham gia."
+                },
+                {
+                    q: "Ở nhiệt độ phòng, F₂ và Cl₂ là chất khí, Br₂ là chất lỏng, I₂ là chất rắn. Tương tác giữ các phân tử halogen lại với nhau ở trạng thái lỏng, rắn là gì?",
+                    keywords: ["F₂ và Cl₂ là chất khí", "Br₂ là chất lỏng", "I₂ là chất rắn"],
+                    choices: ["Liên kết hydrogen.", "Tương tác van der Waals.", "Liên kết ion.", "Liên kết kim loại."],
+                    optionKeywords: ["Liên kết hydrogen", "Tương tác van der Waals", "Liên kết ion", "Liên kết kim loại"],
+                    answer: "B",
+                    explain: "Các phân tử halogen không phân cực và không chứa H nên giữa chúng chỉ tồn tại tương tác van der Waals."
+                },
+                {
+                    q: "Bản chất của tương tác van der Waals là gì?",
+                    keywords: ["Bản chất", "tương tác van der Waals"],
+                    choices: ["Sự dùng chung cặp electron giữa hai nguyên tử phi kim.", "Lực hút tĩnh điện giữa ion dương và ion âm.", "Tương tác tĩnh điện lưỡng cực – lưỡng cực giữa các nguyên tử hay phân tử.", "Sự chuyển nhượng hẳn electron giữa hai phân tử."],
+                    optionKeywords: ["dùng chung cặp electron", "ion dương và ion âm", "tĩnh điện lưỡng cực – lưỡng cực", "chuyển nhượng hẳn"],
+                    answer: "C",
+                    explain: "SGK tr.66 định nghĩa: Tương tác van der Waals là tương tác tĩnh điện lưỡng cực – lưỡng cực giữa các nguyên tử hay phân tử."
+                },
+                {
+                    q: "Vì sao các nguyên tử khí hiếm (Ne, Ar,...) không phân cực vẫn có thể hóa lỏng được ở nhiệt độ thấp?",
+                    keywords: ["khí hiếm (Ne, Ar,...)", "hóa lỏng", "nhiệt độ thấp"],
+                    choices: ["Do sự chuyển động của đám mây electron tạo lưỡng cực tạm thời gây ra tương tác van der Waals.", "Do các nguyên tử khí hiếm tạo liên kết hydrogen rất bền với nhau.", "Do các nguyên tử khí hiếm dễ nhường electron tạo liên kết kim loại.", "Do khí hiếm tạo thành liên kết cộng hóa trị đôi."],
+                    optionKeywords: ["đám mây electron tạo lưỡng cực tạm thời", "liên kết hydrogen", "liên kết kim loại", "liên kết cộng hóa trị đôi"],
+                    answer: "A",
+                    explain: "Đám mây electron luôn chuyển động tạo lưỡng cực tạm thời và lưỡng cực cảm ứng ở nguyên tử bên cạnh, hình thành tương tác van der Waals giúp khí hiếm hóa lỏng."
+                },
+                {
+                    q: "Trong dãy halogen từ F₂ đến I₂, nhiệt độ sôi tăng mạnh từ −188,1 °C lên 185,5 °C chủ yếu do yếu tố nào tăng?",
+                    keywords: ["dãy halogen từ F₂ đến I₂", "nhiệt độ sôi tăng mạnh"],
+                    choices: ["Độ âm điện của nguyên tử halogen tăng dần.", "Số electron (và proton) cùng khối lượng mol tăng làm tăng tương tác van der Waals.", "Số lượng liên kết hydrogen giữa các phân tử tăng.", "Độ phân cực của liên kết X–X tăng mạnh."],
+                    optionKeywords: ["Độ âm điện", "Số electron (và proton) cùng khối lượng mol tăng", "liên kết hydrogen", "Độ phân cực"],
+                    answer: "B",
+                    explain: "Từ F₂ → I₂, tổng số electron tăng từ 18 → 106 và M tăng từ 38 → 253,8 g/mol làm tương tác van der Waals tăng mạnh."
+                },
+                {
+                    q: "Pentane (tₛ = 36 °C) có nhiệt độ sôi cao hơn đồng phân neopentane (tₛ = 9,5 °C) vì nguyên nhân nào?",
+                    keywords: ["Pentane (tₛ = 36 °C)", "neopentane (tₛ = 9,5 °C)"],
+                    choices: ["Pentane có khối lượng phân tử lớn hơn neopentane.", "Pentane tạo được liên kết hydrogen còn neopentane thì không.", "Pentane mạch không phân nhánh có diện tích tiếp xúc giữa các phân tử lớn hơn neopentane.", "Pentane có tổng số electron nhiều hơn neopentane."],
+                    optionKeywords: ["khối lượng phân tử lớn hơn", "liên kết hydrogen", "diện tích tiếp xúc giữa các phân tử lớn hơn", "tổng số electron nhiều hơn"],
+                    answer: "C",
+                    explain: "Cả hai đều là C₅H₁₂ nhưng pentane mạch thẳng có diện tích tiếp xúc giữa các phân tử lớn hơn nhiều so với neopentane dạng cầu nhánh (Hình 13.5)."
+                },
+                {
+                    q: "Ethene (C₂H₄) là chất khí còn polyethene là chất rắn ở điều kiện thường vì lí do nào sau đây?",
+                    keywords: ["Ethene (C₂H₄)", "polyethene là chất rắn"],
+                    choices: ["Polyethene có liên kết ion trong mạch carbon.", "Polyethene có khối lượng phân tử lớn hơn rất nhiều nên tổng tương tác van der Waals rất lớn.", "Polyethene chứa rất nhiều nhóm –OH tạo liên kết hydrogen.", "Ethene không có tương tác van der Waals."],
+                    optionKeywords: ["liên kết ion", "khối lượng phân tử lớn hơn rất nhiều", "nhóm –OH", "không có tương tác"],
+                    answer: "B",
+                    explain: "Theo mục Em có biết (tr.67), khối lượng phân tử tăng làm tổng tương tác van der Waals giữa các phân tử polyethene lớn hơn rất nhiều so với ethene."
+                },
+                {
+                    q: "Dãy nào sau đây sắp xếp đúng các chất theo chiều tăng dần nhiệt độ sôi (dựa vào Bảng 13.1)?",
+                    keywords: ["chiều tăng dần nhiệt độ sôi", "CH₄, H₂S, H₂O"],
+                    choices: ["H₂O < H₂S < CH₄.", "H₂S < CH₄ < H₂O.", "CH₄ < H₂S < H₂O.", "CH₄ < H₂O < H₂S."],
+                    optionKeywords: ["H₂O < H₂S < CH₄", "H₂S < CH₄ < H₂O", "CH₄ < H₂S < H₂O", "CH₄ < H₂O < H₂S"],
+                    answer: "C",
+                    explain: "Theo Bảng 13.1: tₛ(CH₄) = −161,58 °C < tₛ(H₂S) = −60,75 °C < tₛ(H₂O) = 100 °C."
+                }
+            ],
+            2: [
+                {
+                    q: "Cho các phân tử HF, H₂O, NH₃ và ethanol (CH₃CH₂OH). Biết độ âm điện: H = 2,2; C = 2,55; N = 3,04; O = 3,44; F = 3,98.",
+                    keywords: ["HF, H₂O, NH₃", "ethanol (CH₃CH₂OH)", "độ âm điện"],
+                    statements: [
+                        { id: "a", text: "a) Liên kết hydrogen chỉ hình thành giữa các phân tử cùng loại, không hình thành giữa các phân tử khác loại như HF và H₂O.", answer: false, explain: "Sai. Theo Hình 13.2b (SGK tr.65), liên kết hydrogen hình thành được giữa các phân tử khác loại như H₂O với HF, hoặc HF với NH₃." },
+                        { id: "b", text: "b) Trong phân tử NH₃, nguyên tử N mang một phần điện tích âm (δ⁻) và còn một cặp electron hóa trị chưa liên kết nên có thể tạo liên kết hydrogen.", answer: true, explain: "Đúng. Độ âm điện N (3,04) lớn hơn H (2,2) và N còn 1 cặp electron hóa trị chưa liên kết, thỏa mãn điều kiện tạo liên kết hydrogen (Hình 13.1)." },
+                        { id: "c", text: "c) Trong phân tử ethanol (CH₃CH₂OH), cả 6 nguyên tử hydrogen đều có thể tham gia tạo liên kết hydrogen với nước.", answer: false, explain: "Sai. 5 nguyên tử H gắn với C không tham gia vì liên kết C–H ít phân cực; chỉ có 1 nguyên tử H trong nhóm –OH mới tham gia tạo liên kết hydrogen." },
+                        { id: "d", text: "d) Liên kết hydrogen yếu hơn liên kết cộng hóa trị nhưng mạnh hơn tương tác van der Waals thông thường.", answer: true, explain: "Đúng. Lực liên phân tử yếu hơn nhiều so với liên kết cộng hóa trị, trong đó liên kết hydrogen bền hơn tương tác van der Waals thông thường." }
+                    ]
+                },
+                {
+                    q: "Xét số liệu nhiệt độ nóng chảy, nhiệt độ sôi của H₂O (0 °C; 100 °C), H₂S (−85,6 °C; −60,75 °C), CH₄ (−182,5 °C; −161,58 °C) trong Bảng 13.1 và cấu trúc nước đá (Hình 13.3).",
+                    keywords: ["Bảng 13.1", "H₂O", "H₂S", "CH₄", "nước đá"],
+                    statements: [
+                        { id: "a", text: "a) Nhiệt độ nóng chảy và nhiệt độ sôi của H₂O cao bất thường so với H₂S và CH₄ là do giữa các phân tử nước có liên kết hydrogen.", answer: true, explain: "Đúng. Liên kết hydrogen giữa các phân tử H₂O cần nhiều năng lượng hơn để phá vỡ nên tₙc và tₛ của H₂O cao hơn nhiều so với H₂S và CH₄." },
+                        { id: "b", text: "b) Trong tinh thể nước đá, mỗi phân tử nước tạo tối đa 2 liên kết hydrogen tạo thành cấu trúc mạch thẳng đặc khít.", answer: false, explain: "Sai. Mỗi phân tử nước tạo tối đa 4 liên kết hydrogen với 4 phân tử xung quanh tạo cấu trúc tứ diện khá rỗng (Hình 13.3)." },
+                        { id: "c", text: "c) Khi làm nóng nước từ 0 °C đến 4 °C, khối lượng riêng của nước tăng dần do các cấu trúc tứ diện bị phá vỡ một phần làm các phân tử xếp gần nhau hơn.", answer: true, explain: "Đúng theo mục Em có biết (SGK tr.65). Khối lượng riêng nước tăng dần từ 0 °C đến cực đại ở 4 °C." },
+                        { id: "d", text: "d) Liên kết hydrogen còn góp phần giúp nước dâng lên trong mao quản rễ cây và tạo nên cấu trúc xoắn của protein, nucleic acid.", answer: true, explain: "Đúng theo mục Em có biết (SGK tr.65)." }
+                    ]
+                },
+                {
+                    q: "Dựa vào Bảng 13.2 (SGK tr.67) về dãy đơn chất halogen: F₂ (M = 38,0; 18e; tₙc = −219,6 °C; tₛ = −188,1 °C), Cl₂ (M = 70,9; 34e; tₙc = −101,0 °C; tₛ = −34,1 °C), Br₂ (M = 159,8; 70e; tₙc = −7,3 °C; tₛ = 59,2 °C), I₂ (M = 253,8; 106e; tₙc = 113,6 °C; tₛ = 185,5 °C).",
+                    keywords: ["Bảng 13.2", "halogen", "F₂", "Cl₂", "Br₂", "I₂"],
+                    statements: [
+                        { id: "a", text: "a) Các phân tử halogen là phân tử cộng hóa trị không phân cực nên giữa chúng không tồn tại tương tác van der Waals.", answer: false, explain: "Sai. Các phân tử không phân cực vẫn có tương tác van der Waals nhờ lưỡng cực tạm thời xuất hiện do đám mây electron luôn chuyển động." },
+                        { id: "b", text: "b) Từ F₂ đến I₂, tổng số electron trong phân tử tăng từ 18 lên 106 làm tương tác van der Waals tăng mạnh.", answer: true, explain: "Đúng. Số electron (và proton) tăng làm khả năng xuất hiện lưỡng cực tạm thời lớn hơn, khiến tương tác van der Waals tăng mạnh." },
+                        { id: "c", text: "c) Ở điều kiện thường (25 °C), dựa vào nhiệt độ nóng chảy và nhiệt độ sôi trong Bảng 13.2, có đúng 2 chất tồn tại ở trạng thái khí là F₂ và Cl₂.", answer: true, explain: "Đúng. Ở 25 °C: F₂, Cl₂ đã sôi (khí); Br₂ nằm giữa −7,3 °C và 59,2 °C (lỏng); I₂ dưới 113,6 °C (rắn)." },
+                        { id: "d", text: "d) Nhiệt độ sôi của Br₂ (59,2 °C) cao hơn Cl₂ (−34,1 °C) chủ yếu là do giữa các phân tử Br₂ có liên kết hydrogen bền hơn Cl₂.", answer: false, explain: "Sai. Cả Br₂ và Cl₂ đều không có liên kết hydrogen; nhiệt độ sôi Br₂ cao hơn do tương tác van der Waals mạnh hơn." }
+                    ]
+                },
+                {
+                    q: "Xét hai cặp đồng phân pentane / neopentane (C₅H₁₂, Hình 13.5), butane / isobutane (C₄H₁₀) và cặp chất ethene / polyethene (SGK tr.67).",
+                    keywords: ["pentane", "neopentane", "butane", "isobutane", "polyethene"],
+                    statements: [
+                        { id: "a", text: "a) Pentane (tₛ = 36 °C) và neopentane (tₛ = 9,5 °C) có cùng khối lượng mol phân tử và tổng số electron như nhau.", answer: true, explain: "Đúng. Cả hai đều là đồng phân có công thức C₅H₁₂ (M = 72 g/mol, tổng số electron = 5×6 + 12×1 = 42)." },
+                        { id: "b", text: "b) Pentane có nhiệt độ sôi cao hơn neopentane vì mạch không phân nhánh có diện tích tiếp xúc giữa các phân tử lớn hơn, làm tương tác van der Waals mạnh hơn.", answer: true, explain: "Đúng theo Ví dụ 2 và Hình 13.5 (SGK tr.67)." },
+                        { id: "c", text: "c) Tương tự, isobutane (mạch nhánh) có nhiệt độ sôi cao hơn butane (mạch không nhánh).", answer: false, explain: "Sai. Ngược lại: butane (mạch không nhánh) có diện tích tiếp xúc lớn hơn nên nhiệt độ sôi (−0,5 °C) cao hơn isobutane (−11,7 °C)." },
+                        { id: "d", text: "d) Tổng tương tác van der Waals giữa các phân tử polyethene lớn hơn rất nhiều so với ethene khiến polyethene ở thể rắn tại điều kiện thường.", answer: true, explain: "Đúng theo mục Em có biết (SGK tr.67)." }
+                    ]
+                }
+            ],
+            3: [
+                {
+                    q: "Dựa vào bảng độ âm điện ở bên trái (SGK tr.64), hãy tính hiệu độ âm điện giữa nguyên tử F và nguyên tử H trong phân tử HF (làm tròn kết quả đến hàng phần trăm).",
+                    keywords: ["hiệu độ âm điện", "nguyên tử F", "nguyên tử H", "hàng phần trăm"],
+                    answer: "1,78",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Nguyên tố</th><th>Kí hiệu</th><th>Giá trị độ âm điện (SGK tr.64)</th></tr></thead>
+                            <tbody>
+                                <tr><td>Hydrogen</td><td><strong>H</strong></td><td><strong>2,20</strong></td></tr>
+                                <tr><td>Nitrogen</td><td>N</td><td>3,04</td></tr>
+                                <tr><td>Oxygen</td><td>O</td><td>3,44</td></tr>
+                                <tr><td>Fluorine</td><td><strong>F</strong></td><td><strong>3,98</strong></td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Hiệu độ âm điện Δχ(H–F) = 3,98 − 2,20 = <strong>1,78</strong>."
+                },
+                {
+                    q: "Dựa vào Bảng 13.1 (SGK tr.65) ở bên trái, nhiệt độ sôi của H₂O cao hơn nhiệt độ sôi của H₂S bao nhiêu °C? (Làm tròn kết quả đến hàng phần mười).",
+                    keywords: ["Bảng 13.1", "nhiệt độ sôi của H₂O", "H₂S", "hàng phần mười"],
+                    answer: "160,8",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Chất</th><th>Nhiệt độ nóng chảy (°C)</th><th>Nhiệt độ sôi (°C)</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>H<sub>2</sub>O</strong></td><td>0</td><td><strong>100</strong></td></tr>
+                                <tr><td><strong>H<sub>2</sub>S</strong></td><td>−85,6</td><td><strong>−60,75</strong></td></tr>
+                                <tr><td>CH<sub>4</sub></td><td>−182,5</td><td>−161,58</td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Độ chênh lệch = 100 − (−60,75) = 160,75 °C. Làm tròn đến hàng phần mười thu được <strong>160,8</strong>."
+                },
+                {
+                    q: "Xét phân tử nước (H₂O) trong mạng tinh thể nước đá (Hình 13.3) và phân tử ethanol (CH₃CH₂OH, Câu 2 tr.66). Gọi x là số liên kết hydrogen tối đa mà 1 phân tử H₂O tạo được trong nước đá; y là số nguyên tử H trong 1 phân tử ethanol KHÔNG tham gia liên kết hydrogen. Tính tổng x + y.",
+                    keywords: ["x là số liên kết hydrogen tối đa", "y là số nguyên tử H", "KHÔNG tham gia", "x + y"],
+                    answer: "9",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Đại lượng</th><th>Mô tả theo SGK (tr.65 – 66)</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>x</strong></td><td style="text-align:left;">Số liên kết hydrogen tối đa 1 phân tử H<sub>2</sub>O tạo được trong mạng tứ diện nước đá.</td></tr>
+                                <tr><td><strong>y</strong></td><td style="text-align:left;">Số nguyên tử H trong 1 phân tử CH<sub>3</sub>CH<sub>2</sub>OH không tham gia liên kết hydrogen.</td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Trong nước đá, 1 phân tử H₂O tạo tối đa x = 4 liên kết hydrogen. Trong CH₃CH₂OH, 5 nguyên tử H gắn với C không tham gia liên kết hydrogen (y = 5). Tổng x + y = 4 + 5 = <strong>9</strong>."
+                },
+                {
+                    q: "Dựa vào Bảng 13.2 (SGK tr.67) ở bên trái, tính độ chênh lệch nhiệt độ sôi (°C) giữa I₂ và Br₂ (làm tròn kết quả đến hàng phần mười).",
+                    keywords: ["Bảng 13.2", "chênh lệch nhiệt độ sôi", "I₂ và Br₂"],
+                    answer: "126,3",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Halogen</th><th>M (g/mol)</th><th>Tổng số e</th><th>t<sub>s</sub> (°C)</th><th>t<sub>nc</sub> (°C)</th></tr></thead>
+                            <tbody>
+                                <tr><td>F<sub>2</sub></td><td>38,0</td><td>18</td><td>−188,1</td><td>−219,6</td></tr>
+                                <tr><td>Cl<sub>2</sub></td><td>70,9</td><td>34</td><td>−34,1</td><td>−101,0</td></tr>
+                                <tr><td><strong>Br<sub>2</sub></strong></td><td>159,8</td><td>70</td><td><strong>59,2</strong></td><td>−7,3</td></tr>
+                                <tr><td><strong>I<sub>2</sub></strong></td><td>253,8</td><td>106</td><td><strong>185,5</strong></td><td>113,6</td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Độ chênh lệch nhiệt độ sôi giữa I₂ và Br₂ = 185,5 − 59,2 = <strong>126,3</strong> °C."
+                },
+                {
+                    q: "Dựa vào Bảng 13.2 (SGK tr.67) ở bên trái, tổng số electron của một phân tử I₂ gấp bao nhiêu lần tổng số electron của một phân tử F₂? (Làm tròn kết quả đến hàng phần trăm).",
+                    keywords: ["tổng số electron", "phân tử I₂", "phân tử F₂", "hàng phần trăm"],
+                    answer: "5,89",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Halogen</th><th>Khối lượng mol (g/mol)</th><th>Tổng số electron</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>F<sub>2</sub></strong></td><td>38,0</td><td><strong>18</strong></td></tr>
+                                <tr><td>Cl<sub>2</sub></td><td>70,9</td><td>34</td></tr>
+                                <tr><td>Br<sub>2</sub></td><td>159,8</td><td>70</td></tr>
+                                <tr><td><strong>I<sub>2</sub></strong></td><td>253,8</td><td><strong>106</strong></td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Tỉ số electron = 106 / 18 = 5,8888... Làm tròn đến hàng phần trăm thu được <strong>5,89</strong>."
+                },
+                {
+                    q: "Dựa vào dữ liệu Ví dụ 2 (Hình 13.5, SGK tr.67) ở bên trái, nhiệt độ sôi của đồng phân mạch không nhánh pentane cao hơn đồng phân mạch nhánh neopentane bao nhiêu °C?",
+                    keywords: ["pentane", "neopentane", "bao nhiêu °C"],
+                    answer: "26,5",
+                    tableHTML: `
+                        <table class="data-table">
+                            <thead><tr><th>Đồng phân C<sub>5</sub>H<sub>12</sub></th><th>Dạng mạch carbon</th><th>Nhiệt độ sôi (°C)</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Pentane</strong></td><td>Mạch không phân nhánh</td><td><strong>36</strong></td></tr>
+                                <tr><td><strong>Neopentane</strong></td><td>Mạch phân nhánh</td><td><strong>9,5</strong></td></tr>
+                            </tbody>
+                        </table>`,
+                    explain: "Hiệu nhiệt độ sôi = 36 − 9,5 = <strong>26,5</strong> °C."
+                }
+            ]
+        };
+
+        /* =====================================================================
+           3. QUẢN LÝ TRẠNG THÁI, LOCALSTORAGE (H10_B13_Progress) & ÂM THANH
+           ===================================================================== */
+        const STORAGE_KEY = 'H10_B13_Progress';
+        const WHEEL_KEY = 'H10_B13_WheelNames';
+
+        let currentPane = 'pane-home';
+        let currentPart = 1;
+        let currentQuestionIdx = 0;
+        let currentSlideIdx = 0;
+        let isMuted = false;
+        let isProjectorMode = false;
+        let isTeacherMode = false;
+        let uiScale = 1.0;
+
+        let userAnswers = {};
+        let tempTFChoices = {};
+
+        try {
+            userAnswers = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        } catch (e) { userAnswers = {}; }
+
+        function saveProgress() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(userAnswers)); } catch (e) {}
+            updateHeaderScore();
+        }
+
+        let audioCtx = null;
+        function playSound(type) {
+            if (isMuted) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const ctx = audioCtx;
+                if (type === 'click') {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.connect(g); g.connect(ctx.destination);
+                    o.frequency.setValueAtTime(620, ctx.currentTime);
+                    g.gain.setValueAtTime(0.05, ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.05);
+                    o.start(); o.stop(ctx.currentTime + 0.05);
+                } else if (type === 'correct') {
+                    [261.6, 329.6, 392.0, 523.3].forEach((f, i) => {
+                        const o = ctx.createOscillator(), g = ctx.createGain();
+                        o.type = 'triangle'; o.connect(g); g.connect(ctx.destination);
+                        o.frequency.setValueAtTime(f, ctx.currentTime + i * 0.07);
+                        g.gain.setValueAtTime(0.08, ctx.currentTime + i * 0.07);
+                        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.22);
+                        o.start(ctx.currentTime + i * 0.07); o.stop(ctx.currentTime + i * 0.07 + 0.22);
+                    });
+                } else if (type === 'wrong') {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.type = 'sawtooth'; o.connect(g); g.connect(ctx.destination);
+                    o.frequency.setValueAtTime(160, ctx.currentTime);
+                    g.gain.setValueAtTime(0.07, ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.22);
+                    o.start(); o.stop(ctx.currentTime + 0.22);
+                } else if (type === 'tick') {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.type = 'sine'; o.connect(g); g.connect(ctx.destination);
+                    o.frequency.setValueAtTime(840, ctx.currentTime);
+                    g.gain.setValueAtTime(0.06, ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.035);
+                    o.start(); o.stop(ctx.currentTime + 0.035);
+                }
+            } catch (e) {}
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            box.textContent = msg;
+            box.classList.add('show');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => box.classList.remove('show'), 2600);
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('btnSoundToggle');
+            btn.textContent = isMuted ? '🔇' : '🔊';
+            btn.classList.toggle('muted', isMuted);
+            showToast(isMuted ? 'Đã tắt âm thanh' : 'Đã bật âm thanh');
+        }
+
+        /* =====================================================================
+           4. CHẾ ĐỘ MÁY CHIẾU (PROJECTOR MODE), SIDEBAR & CỠ CHỮ A- / A+
+           ===================================================================== */
+        function applyFontScale(scale) {
+            uiScale = Math.max(0.85, Math.min(1.70, Math.round(scale * 100) / 100));
+            document.documentElement.style.setProperty('--ui-scale', uiScale);
+            document.getElementById('fontScaleReadout').textContent = Math.round(uiScale * 100) + '%';
+        }
+
+        function changeFontScale(delta) { playSound('click'); applyFontScale(uiScale + delta); }
+        function resetFontScale() { playSound('click'); applyFontScale(isProjectorMode ? 1.35 : 1.0); }
+
+        function toggleSidebar(forceState) {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('sidebarOverlay');
+            const willCollapse = (typeof forceState === 'boolean') ? !forceState : !sb.classList.contains('collapsed');
+            sb.classList.toggle('collapsed', willCollapse);
+            if (window.innerWidth <= 900) ov.classList.toggle('show', !willCollapse);
+            else ov.classList.remove('show');
+        }
+
+        function toggleProjectorMode() {
+            playSound('click');
+            isProjectorMode = !isProjectorMode;
+            document.body.classList.toggle('projector-mode', isProjectorMode);
+            const btn = document.getElementById('btnProjector');
+            btn.classList.toggle('active', isProjectorMode);
+            btn.innerHTML = isProjectorMode ? '📽️ Đang trình chiếu (P)' : '📽️ Máy chiếu (P)';
+
+            if (isProjectorMode) {
+                toggleSidebar(false);
+                applyFontScale(1.35);
+                try {
+                    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    }
+                } catch (e) {}
+                showToast('📽️ Đã bật Chế độ Máy chiếu (135%, tương phản cao, ẩn Sidebar)');
+            } else {
+                if (window.innerWidth > 900) toggleSidebar(true);
+                applyFontScale(1.0);
+                try {
+                    if (document.fullscreenElement && document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    }
+                } catch (e) {}
+                showToast('Đã tắt Chế độ Máy chiếu');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target && e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea') return;
+            if (e.key === 'p' || e.key === 'P') {
+                e.preventDefault();
+                toggleProjectorMode();
+            }
+        });
+
+        /* =====================================================================
+           5. ĐIỀU HƯỚNG 6 KHÔNG GIAN
+           ===================================================================== */
+        function switchPane(paneId, navEl) {
+            playSound('click');
+            document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(paneId).classList.add('active');
+            if (navEl) navEl.classList.add('active');
+            currentPane = paneId;
+
+            if (window.innerWidth <= 900) toggleSidebar(false);
+
+            const submenu = document.getElementById('practiceSubmenu');
+            const headerTitle = document.getElementById('headerPartTitle');
+            const headerProgress = document.getElementById('headerProgress');
+
+            if (paneId === 'pane-practice') {
+                submenu.style.display = 'flex';
+                headerProgress.style.display = 'block';
+                generateQuestionDots();
+                renderPracticeContent();
+            } else {
+                submenu.style.display = 'none';
+                headerProgress.style.display = 'none';
+                if (paneId === 'pane-home') headerTitle.textContent = 'Hóa học 10 - Bài 13: Trang chủ';
+                if (paneId === 'pane-lesson') { headerTitle.textContent = 'Không gian bài học (5 Slide SGK KNTT)'; jumpToSlide(currentSlideIdx); }
+                if (paneId === 'pane-glossary') headerTitle.textContent = 'Hệ thống 8 từ khóa cốt lõi';
+                if (paneId === 'pane-wheel') { headerTitle.textContent = '🎡 Vòng quay may mắn gọi tên'; drawWheel(); }
+                if (paneId === 'pane-dashboard') { headerTitle.textContent = '🏆 Báo cáo kết quả luyện tập'; renderDashboard(); }
+            }
+        }
+
+        /* =====================================================================
+           6. SLIDESHOW, THUYẾT MINH WEB SPEECH API & ĐỒNG HỒ THẢO LUẬN
+           ===================================================================== */
+        function navigateSlide(dir) { playSound('click'); jumpToSlide(Math.max(0, Math.min(4, currentSlideIdx + dir))); }
+
+        function jumpToSlide(idx) {
+            currentSlideIdx = parseInt(idx, 10);
+            document.querySelectorAll('.slide-content').forEach((el, i) => el.classList.toggle('active-slide', i === currentSlideIdx));
+            document.getElementById('slideProgressBar').value = currentSlideIdx;
+            document.getElementById('slideIndexLabel').textContent = `Slide ${currentSlideIdx + 1} / 5`;
+        }
+
+        function toggleAnswerPanel(id) { playSound('click'); document.getElementById(id).classList.toggle('open'); }
+
+        function speakCurrentSlide() {
+            if (!('speechSynthesis' in window)) { showToast('Trình duyệt không hỗ trợ đọc giọng nói.'); return; }
+            const btn = document.getElementById('btnSpeakSlide');
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                btn.textContent = '🔊 Thuyết minh Slide';
+                btn.style.backgroundColor = 'var(--accent-purple)';
+                return;
+            }
+            const activeSlide = document.querySelector('.slide-content.active-slide');
+            if (!activeSlide) return;
+            let text = activeSlide.innerText
+                .replace(/van der Waals/gi, 'van đơ van')
+                .replace(/H2O|H₂O/g, 'nước')
+                .replace(/H2S|H₂S/g, 'hát hai ét')
+                .replace(/CH4|CH₄/g, 'mê tan')
+                .replace(/NH3|NH₃/g, 'a mô ni ắc')
+                .replace(/C5H12|C₅H₁₂/g, 'xê năm hát mười hai')
+                .replace(/δ\+|δ⁺/g, 'đen ta cộng')
+                .replace(/δ−|δ⁻/g, 'đen ta trừ')
+                .replace(/→/g, ' tạo ra ');
+            const utt = new SpeechSynthesisUtterance(text);
+            utt.lang = 'vi-VN';
+            utt.rate = 1.0;
+            utt.onend = () => {
+                btn.textContent = '🔊 Thuyết minh Slide';
+                btn.style.backgroundColor = 'var(--accent-purple)';
+            };
+            btn.textContent = '⏸ Dừng thuyết minh';
+            btn.style.backgroundColor = '#c0392b';
+            window.speechSynthesis.speak(utt);
+        }
+
+        let timerInterval = null, timerSeconds = 120, timerRunning = false;
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+            const el = document.getElementById('slideTimerClock');
+            el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            el.classList.toggle('warning', timerRunning && timerSeconds <= 10);
+        }
+        function setTimerPreset(mins) {
+            playSound('click');
+            clearInterval(timerInterval); timerRunning = false;
+            timerSeconds = mins * 60;
+            document.getElementById('btnStartTimer').textContent = '▶ Bắt đầu';
+            updateTimerDisplay();
+        }
+        function resetTimer() { setTimerPreset(2); }
+        function toggleTimer() {
+            playSound('click');
+            const btn = document.getElementById('btnStartTimer');
+            if (timerRunning) {
+                clearInterval(timerInterval); timerRunning = false;
+                btn.textContent = '▶ Bắt đầu';
+            } else {
+                if (timerSeconds <= 0) timerSeconds = 120;
+                timerRunning = true;
+                btn.textContent = '⏸ Tạm dừng';
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                        if (timerSeconds <= 10 && timerSeconds > 0) playSound('tick');
+                    } else {
+                        clearInterval(timerInterval); timerRunning = false;
+                        btn.textContent = '▶ Bắt đầu';
+                        updateTimerDisplay();
+                        playSound('wrong');
+                        openInfoModal('⏱️', 'HẾT THỜI GIAN THẢO LUẬN!', 'Đã hết thời gian thảo luận nhóm. Mời đại diện các nhóm trình bày kết quả!');
+                    }
+                }, 1000);
+            }
+        }
+
+        /* =====================================================================
+           7. PHÒNG MÔ PHỎNG TRỰC QUAN SVG (4 MÔ HÌNH TƯƠNG TÁC)
+           ===================================================================== */
+        let simHBondType = 1; // 1: NH3···NH3, 2: H2O···H2O, 3: H2O···HF···H2O
+        let simWaterTemp = 0; // 0 to 10 °C
+        let simDipoleActive = true;
+
+        function runSim(simId) {
+            playSound('click');
+            document.querySelectorAll('.btn-sim-option').forEach((b, i) => b.classList.toggle('active', i === simId - 1));
+            if (simId === 1) renderSimHBond();
+            if (simId === 2) renderSimWaterDensity();
+            if (simId === 3) renderSimVanDerWaals();
+            if (simId === 4) renderSimPentane();
+        }
+
+        // 1. Mô phỏng Liên kết Hydrogen (Hình 13.1 & 13.2)
+        function renderSimHBond() {
+            let svg = '', desc = '';
+            if (simHBondType === 1) {
+                svg = `
+                <svg width="100%" height="250" viewBox="0 0 640 240">
+                    <text x="320" y="28" fill="#fde047" font-size="16" text-anchor="middle" font-weight="bold">Hình 13.1: Liên kết hydrogen giữa hai phân tử ammonia (NH₃ ··· NH₃)</text>
+                    <!-- NH3 trái -->
+                    <circle cx="170" cy="125" r="28" fill="#3b82f6" stroke="#fff" stroke-width="2.5"/>
+                    <text x="170" y="131" fill="#fff" font-size="18" text-anchor="middle" font-weight="bold">N</text>
+                    <text x="170" y="88" fill="#93c5fd" font-size="15" text-anchor="middle" font-weight="bold">δ⁻</text>
+                    <!-- Cặp e chưa liên kết trên N trái -->
+                    <circle cx="206" cy="118" r="4" fill="#fde047"/><circle cx="206" cy="132" r="4" fill="#fde047"/>
+                    <ellipse cx="206" cy="125" rx="9" ry="16" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3 2"/>
+                    <!-- 3 H của NH3 trái -->
+                    <line x1="142" y1="125" x2="105" y2="125" stroke="#fff" stroke-width="3"/><circle cx="92" cy="125" r="14" fill="#e2e8f0"/><text x="92" y="130" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="154" y1="102" x2="132" y2="75" stroke="#fff" stroke-width="3"/><circle cx="122" cy="64" r="14" fill="#e2e8f0"/><text x="122" y="69" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="154" y1="148" x2="132" y2="175" stroke="#fff" stroke-width="3"/><circle cx="122" cy="186" r="14" fill="#e2e8f0"/><text x="122" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+
+                    <!-- Dấu ba chấm liên kết hydrogen nhấp nháy -->
+                    <g style="animation: hBondPulse 1.3s infinite;">
+                        <circle cx="242" cy="125" r="5" fill="#fb923c"/>
+                        <circle cx="268" cy="125" r="5" fill="#fb923c"/>
+                        <circle cx="294" cy="125" r="5" fill="#fb923c"/>
+                        <text x="268" y="102" fill="#fb923c" font-size="13" text-anchor="middle" font-weight="bold">Liên kết hydrogen</text>
+                    </g>
+
+                    <!-- NH3 phải -->
+                    <circle cx="332" cy="125" r="16" fill="#fef08a" stroke="#f59e0b" stroke-width="2.5"/>
+                    <text x="332" y="130" fill="#0f172a" font-size="14" text-anchor="middle" font-weight="bold">H</text>
+                    <text x="332" y="98" fill="#fca5a5" font-size="15" text-anchor="middle" font-weight="bold">δ⁺</text>
+                    <line x1="348" y1="125" x2="392" y2="125" stroke="#fff" stroke-width="3.5"/>
+                    <circle cx="420" cy="125" r="28" fill="#3b82f6" stroke="#fff" stroke-width="2.5"/>
+                    <text x="420" y="131" fill="#fff" font-size="18" text-anchor="middle" font-weight="bold">N</text>
+                    <text x="420" y="88" fill="#93c5fd" font-size="15" text-anchor="middle" font-weight="bold">δ⁻</text>
+                    <circle cx="456" cy="118" r="4" fill="#fde047"/><circle cx="456" cy="132" r="4" fill="#fde047"/>
+                    <line x1="420" y1="153" x2="420" y2="182" stroke="#fff" stroke-width="3"/><circle cx="420" cy="194" r="14" fill="#e2e8f0"/><text x="420" y="199" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="438" y1="104" x2="462" y2="78" stroke="#fff" stroke-width="3"/><circle cx="472" cy="68" r="14" fill="#e2e8f0"/><text x="472" y="73" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                </svg>`;
+                desc = '<strong>Hình 13.1 (NH<sub>3</sub> ··· NH<sub>3</sub>):</strong> Nguyên tử H linh động (δ<sup>+</sup>) của phân tử NH<sub>3</sub> bên phải hút cặp electron hóa trị chưa liên kết trên nguyên tử N (δ<sup>−</sup>) của phân tử NH<sub>3</sub> bên trái tạo thành liên kết hydrogen (···).';
+            } else if (simHBondType === 2) {
+                svg = `
+                <svg width="100%" height="250" viewBox="0 0 640 240">
+                    <text x="320" y="28" fill="#fde047" font-size="16" text-anchor="middle" font-weight="bold">Hình 13.2a: Liên kết hydrogen giữa các phân tử cùng loại (H₂O ··· H₂O)</text>
+                    <!-- H2O 1 -->
+                    <circle cx="115" cy="115" r="25" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="115" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">O</text>
+                    <text x="115" y="80" fill="#fca5a5" font-size="14" text-anchor="middle" font-weight="bold">δ⁻</text>
+                    <line x1="115" y1="140" x2="115" y2="174" stroke="#fff" stroke-width="3"/><circle cx="115" cy="186" r="14" fill="#e2e8f0"/><text x="115" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="140" y1="115" x2="176" y2="115" stroke="#fff" stroke-width="3"/><circle cx="190" cy="115" r="15" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/><text x="190" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <text x="190" y="90" fill="#fde047" font-size="14" text-anchor="middle" font-weight="bold">δ⁺</text>
+
+                    <!-- ··· 1 -->
+                    <g style="animation: hBondPulse 1.2s infinite;">
+                        <circle cx="225" cy="115" r="4.5" fill="#fb923c"/><circle cx="245" cy="115" r="4.5" fill="#fb923c"/><circle cx="265" cy="115" r="4.5" fill="#fb923c"/>
+                    </g>
+
+                    <!-- H2O 2 -->
+                    <circle cx="305" cy="115" r="25" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="305" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">O</text>
+                    <text x="305" y="80" fill="#fca5a5" font-size="14" text-anchor="middle" font-weight="bold">δ⁻</text>
+                    <line x1="305" y1="140" x2="305" y2="174" stroke="#fff" stroke-width="3"/><circle cx="305" cy="186" r="14" fill="#e2e8f0"/><text x="305" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="330" y1="115" x2="366" y2="115" stroke="#fff" stroke-width="3"/><circle cx="380" cy="115" r="15" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/><text x="380" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <text x="380" y="90" fill="#fde047" font-size="14" text-anchor="middle" font-weight="bold">δ⁺</text>
+
+                    <!-- ··· 2 -->
+                    <g style="animation: hBondPulse 1.2s infinite;">
+                        <circle cx="415" cy="115" r="4.5" fill="#fb923c"/><circle cx="435" cy="115" r="4.5" fill="#fb923c"/><circle cx="455" cy="115" r="4.5" fill="#fb923c"/>
+                    </g>
+
+                    <!-- H2O 3 -->
+                    <circle cx="495" cy="115" r="25" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="495" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">O</text>
+                    <line x1="495" y1="140" x2="495" y2="174" stroke="#fff" stroke-width="3"/><circle cx="495" cy="186" r="14" fill="#e2e8f0"/><text x="495" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="520" y1="115" x2="554" y2="115" stroke="#fff" stroke-width="3"/><circle cx="568" cy="115" r="14" fill="#e2e8f0"/><text x="568" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                </svg>`;
+                desc = '<strong>Hình 13.2a (Cùng loại H<sub>2</sub>O ··· H<sub>2</sub>O):</strong> Các phân tử nước liên kết chặt chẽ với nhau qua cầu nối O<sup>δ−</sup>···H<sup>δ+</sup>–O làm tăng mạnh nhiệt độ nóng chảy (0 °C) và nhiệt độ sôi (100 °C).';
+            } else {
+                svg = `
+                <svg width="100%" height="250" viewBox="0 0 640 240">
+                    <text x="320" y="28" fill="#fde047" font-size="16" text-anchor="middle" font-weight="bold">Hình 13.2b: Liên kết hydrogen giữa các phân tử khác loại (H₂O ··· HF ··· H₂O)</text>
+                    <!-- H2O trái -->
+                    <circle cx="110" cy="115" r="25" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="110" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">O</text>
+                    <line x1="110" y1="140" x2="110" y2="174" stroke="#fff" stroke-width="3"/><circle cx="110" cy="186" r="14" fill="#e2e8f0"/><text x="110" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="135" y1="115" x2="172" y2="115" stroke="#fff" stroke-width="3"/><circle cx="186" cy="115" r="15" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/><text x="186" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <text x="186" y="90" fill="#fde047" font-size="14" text-anchor="middle" font-weight="bold">δ⁺</text>
+
+                    <!-- ··· 1 -->
+                    <g style="animation: hBondPulse 1.2s infinite;">
+                        <circle cx="222" cy="115" r="4.5" fill="#fb923c"/><circle cx="242" cy="115" r="4.5" fill="#fb923c"/><circle cx="262" cy="115" r="4.5" fill="#fb923c"/>
+                    </g>
+
+                    <!-- HF giữa -->
+                    <circle cx="302" cy="115" r="25" fill="#10b981" stroke="#fff" stroke-width="2.5"/><text x="302" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">F</text>
+                    <text x="302" y="80" fill="#6ee7b7" font-size="14" text-anchor="middle" font-weight="bold">δ⁻ (3,98)</text>
+                    <line x1="327" y1="115" x2="365" y2="115" stroke="#fff" stroke-width="3.5"/><circle cx="380" cy="115" r="15" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/><text x="380" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <text x="380" y="90" fill="#fde047" font-size="14" text-anchor="middle" font-weight="bold">δ⁺</text>
+
+                    <!-- ··· 2 -->
+                    <g style="animation: hBondPulse 1.2s infinite;">
+                        <circle cx="416" cy="115" r="4.5" fill="#fb923c"/><circle cx="436" cy="115" r="4.5" fill="#fb923c"/><circle cx="456" cy="115" r="4.5" fill="#fb923c"/>
+                    </g>
+
+                    <!-- H2O phải -->
+                    <circle cx="496" cy="115" r="25" fill="#ef4444" stroke="#fff" stroke-width="2.5"/><text x="496" y="121" fill="#fff" font-size="17" text-anchor="middle" font-weight="bold">O</text>
+                    <text x="496" y="80" fill="#fca5a5" font-size="14" text-anchor="middle" font-weight="bold">δ⁻ (3,44)</text>
+                    <line x1="496" y1="140" x2="496" y2="174" stroke="#fff" stroke-width="3"/><circle cx="496" cy="186" r="14" fill="#e2e8f0"/><text x="496" y="191" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                    <line x1="521" y1="115" x2="555" y2="115" stroke="#fff" stroke-width="3"/><circle cx="569" cy="115" r="14" fill="#e2e8f0"/><text x="569" y="120" fill="#0f172a" font-size="13" text-anchor="middle" font-weight="bold">H</text>
+                </svg>`;
+                desc = '<strong>Hình 13.2b (Khác loại H<sub>2</sub>O ··· HF ··· H<sub>2</sub>O):</strong> Liên kết hydrogen cũng dễ dàng hình thành giữa các phân tử khác loại (giúp HF, NH<sub>3</sub>, ethanol tan vô hạn trong nước).';
+            }
+            document.getElementById('simVisual').innerHTML = svg;
+            document.getElementById('simActionBar').innerHTML = `
+                <button class="btn-sim-step ${simHBondType === 1 ? 'active-step' : ''}" onclick="playSound('click'); simHBondType=1; renderSimHBond()">Hình 13.1: NH₃ ··· NH₃</button>
+                <button class="btn-sim-step ${simHBondType === 2 ? 'active-step' : ''}" onclick="playSound('click'); simHBondType=2; renderSimHBond()">Hình 13.2a: H₂O ··· H₂O</button>
+                <button class="btn-sim-step ${simHBondType === 3 ? 'active-step' : ''}" onclick="playSound('click'); simHBondType=3; renderSimHBond()">Hình 13.2b: H₂O ··· HF ··· H₂O</button>`;
+            document.getElementById('simDesc').innerHTML = desc;
+        }
+
+        // 2. Mô phỏng Nước đá (0°C) vs Nước lỏng (4°C - 10°C)
+        function renderSimWaterDensity() {
+            const t = simWaterTemp;
+            // Mức độ rỗng: 0°C rỗng nhất (spread=1.0), 4°C khít nhất (spread=0.58), 10°C giãn nhẹ (spread=0.72)
+            let spread = t <= 4 ? (1.0 - (t / 4) * 0.42) : (0.58 + ((t - 4) / 6) * 0.16);
+            let density = t === 0 ? '0,917 (Nước đá)' : t <= 4 ? (0.9998 + (t / 4) * 0.0002).toFixed(4).replace('.', ',') : (1.0000 - ((t - 4) / 6) * 0.0003).toFixed(4).replace('.', ',');
+            let statusText = t === 0 ? '❄️ 0 °C – Mạng tứ diện rỗng (Nước đá nổi)'
+                : t === 4 ? '💧 4 °C – Khối lượng riêng CỰC ĐẠI (xếp khít nhất)'
+                : t < 4 ? `🧊 ${t} °C – Cấu trúc tứ diện vỡ một phần → D tăng`
+                : `🌡️ ${t} °C – Chuyển động nhiệt mạnh → giãn nở, D giảm`;
+
+            const cx = 310, cy = 128;
+            const d = Math.round(78 * spread);
+            const pts = [
+                { x: cx, y: cy - d },
+                { x: cx - d, y: cy + Math.round(d * 0.6) },
+                { x: cx + d, y: cy + Math.round(d * 0.6) },
+                { x: cx + Math.round(d * 0.25), y: cy + Math.round(d * 0.15) }
+            ];
+            const hBondOpacity = t === 0 ? 1 : t <= 4 ? 0.55 : 0.35;
+
+            document.getElementById('simVisual').innerHTML = `
+                <svg width="100%" height="245" viewBox="0 0 620 245">
+                    <text x="310" y="24" fill="#fde047" font-size="16" text-anchor="middle" font-weight="bold">${statusText}</text>
+                    <!-- Khung tứ diện mờ ở 0°C -->
+                    <polygon points="${pts[0].x},${pts[0].y} ${pts[1].x},${pts[1].y} ${pts[2].x},${pts[2].y}" fill="rgba(56,189,248,0.08)" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6 4" opacity="${hBondOpacity}"/>
+                    <!-- Các đường liên kết hydrogen từ tâm ra 4 phân tử -->
+                    ${pts.map(p => `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#fb923c" stroke-width="3" stroke-dasharray="5 5" opacity="${hBondOpacity}"/>`).join('')}
+                    <!-- 4 phân tử H2O xung quanh -->
+                    ${pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="18" fill="#38bdf8" stroke="#fff" stroke-width="2"/><text x="${p.x}" y="${p.y + 5}" fill="#0f172a" font-size="12" text-anchor="middle" font-weight="bold">H₂O</text>`).join('')}
+                    <!-- Phân tử H2O trung tâm -->
+                    <circle cx="${cx}" cy="${cy}" r="22" fill="#0284c7" stroke="#fde047" stroke-width="3"/>
+                    <text x="${cx}" y="${cy + 5}" fill="#ffffff" font-size="13" text-anchor="middle" font-weight="bold">H₂O</text>
+                    <!-- Hộp hiển thị khối lượng riêng -->
+                    <rect x="20" y="185" width="210" height="44" rx="8" fill="rgba(255,255,255,0.1)" stroke="#94a3b8"/>
+                    <text x="125" y="204" fill="#cbd5e1" font-size="12" text-anchor="middle">Khối lượng riêng ước tính</text>
+                    <text x="125" y="222" fill="#4ade80" font-size="14" text-anchor="middle" font-weight="bold">${density} g/cm³</text>
+                </svg>`;
+
+            document.getElementById('simActionBar').innerHTML = `
+                <label for="tempSlider" style="font-weight:800; color:#1e293b;">🌡️ Kéo thanh nhiệt độ: <strong>${t} °C</strong></label>
+                <input id="tempSlider" type="range" min="0" max="10" value="${t}" style="width:240px; cursor:pointer;" oninput="simWaterTemp=Number(this.value); renderSimWaterDensity()">
+                <button class="btn-sim-step" onclick="simWaterTemp=0; renderSimWaterDensity()">0 °C (Đá)</button>
+                <button class="btn-sim-step" style="background:#05c46b;" onclick="simWaterTemp=4; renderSimWaterDensity()">4 °C (D max)</button>`;
+            document.getElementById('simDesc').innerHTML = `<strong>Giải thích (Hình 13.3 – tr.65):</strong> Ở 0 °C, mỗi phân tử H<sub>2</sub>O tạo 4 liên kết hydrogen tạo cấu trúc tứ diện rỗng nên nước đá nổi. Khi tăng từ 0 °C đến 4 °C, cấu trúc tứ diện vỡ một phần làm các phân tử xếp gần nhau hơn → khối lượng riêng đạt cực đại ở 4 °C. Trên 4 °C, khoảng cách phân tử tăng dần làm khối lượng riêng giảm.`;
+        }
+
+        // 3. Mô phỏng Lưỡng cực tạm thời & Cảm ứng (Hình 13.4)
+        function renderSimVanDerWaals() {
+            const animStyle = simDipoleActive ? 'animation: cloudShift 2.2s ease-in-out infinite;' : '';
+            document.getElementById('simVisual').innerHTML = `
+                <svg width="100%" height="245" viewBox="0 0 640 245">
+                    <text x="320" y="26" fill="#fde047" font-size="16" text-anchor="middle" font-weight="bold">Hình 13.4: Sự hình thành lưỡng cực tạm thời &amp; tương tác van der Waals</text>
+                    <!-- Nguyên tử 1 (lưỡng cực tạm thời) -->
+                    <g style="${animStyle}">
+                        <ellipse cx="185" cy="128" rx="68" ry="44" fill="rgba(56,189,248,0.32)" stroke="#38bdf8" stroke-width="2.5"/>
+                        <text x="148" y="134" fill="#fca5a5" font-size="22" font-weight="bold">δ⁺</text>
+                        <text x="210" y="134" fill="#93c5fd" font-size="22" font-weight="bold">δ⁻</text>
+                    </g>
+                    <text x="185" y="198" fill="#e2e8f0" font-size="13" text-anchor="middle" font-weight="bold">Lưỡng cực tạm thời</text>
+
+                    <!-- Mũi tên lực hút tĩnh điện -->
+                    <g style="animation: hBondPulse 1.1s infinite;">
+                        <line x1="270" y1="128" x2="365" y2="128" stroke="#fb923c" stroke-width="4" stroke-dasharray="7 5"/>
+                        <text x="318" y="106" fill="#fb923c" font-size="14" text-anchor="middle" font-weight="bold">Lực hút van der Waals</text>
+                        <text x="318" y="152" fill="#fde047" font-size="13" text-anchor="middle">(δ⁻ hút δ⁺)</text>
+                    </g>
+
+                    <!-- Nguyên tử 2 (lưỡng cực cảm ứng) -->
+                    <g style="${animStyle}">
+                        <ellipse cx="455" cy="128" rx="68" ry="44" fill="rgba(167,139,250,0.32)" stroke="#a78bfa" stroke-width="2.5"/>
+                        <text x="418" y="134" fill="#fca5a5" font-size="22" font-weight="bold">δ⁺</text>
+                        <text x="480" y="134" fill="#93c5fd" font-size="22" font-weight="bold">δ⁻</text>
+                    </g>
+                    <text x="455" y="198" fill="#e2e8f0" font-size="13" text-anchor="middle" font-weight="bold">Lưỡng cực cảm ứng</text>
+                </svg>`;
+            document.getElementById('simActionBar').innerHTML = `
+                <button class="btn-sim-step ${simDipoleActive ? 'active-step' : ''}" onclick="playSound('click'); simDipoleActive=!simDipoleActive; renderSimVanDerWaals()">
+                    ${simDipoleActive ? '⏸ Tạm dừng chuyển động đám mây e' : '▶ Chạy chuyển động đám mây e'}
+                </button>`;
+            document.getElementById('simDesc').innerHTML = `<strong>Cơ chế (Hình 13.4 – tr.66):</strong> Do đám mây electron luôn chuyển động không ngừng, tại một thời điểm nó có thể lệch về một phía tạo <strong>lưỡng cực tạm thời (δ<sup>+</sup>, δ<sup>−</sup>)</strong>, rồi gây ra <strong>lưỡng cực cảm ứng</strong> ở nguyên tử/phân tử lân cận tạo lực hút tĩnh điện van der Waals.`;
+        }
+
+        // 4. So sánh Diện tích tiếp xúc Pentane vs Neopentane (Hình 13.5)
+        function renderSimPentane() {
+            document.getElementById('simVisual').innerHTML = `
+                <svg width="100%" height="250" viewBox="0 0 660 250">
+                    <!-- Cột trái: Pentane -->
+                    <rect x="14" y="12" width="305" height="226" rx="12" fill="rgba(255,255,255,0.06)" stroke="#4ade80" stroke-width="2"/>
+                    <text x="166" y="38" fill="#4ade80" font-size="15" text-anchor="middle" font-weight="bold">Pentane (mạch không nhánh) – tₛ = 36 °C</text>
+                    <!-- Phân tử trên -->
+                    <polyline points="45,95 95,70 155,95 215,70 275,95" fill="none" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+                    <!-- Phân tử dưới -->
+                    <polyline points="45,165 95,140 155,165 215,140 275,165" fill="none" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+                    <!-- 5 vạch đỏ tiếp xúc -->
+                    <g stroke="#ef4444" stroke-width="3.5" stroke-dasharray="4 4" style="animation:hBondPulse 1.2s infinite;">
+                        <line x1="45" y1="103" x2="45" y2="157"/><line x1="95" y1="78" x2="95" y2="132"/>
+                        <line x1="155" y1="103" x2="155" y2="157"/><line x1="215" y1="78" x2="215" y2="132"/>
+                        <line x1="275" y1="103" x2="275" y2="157"/>
+                    </g>
+                    <text x="166" y="216" fill="#fca5a5" font-size="13" text-anchor="middle" font-weight="bold">Nhiều điểm tiếp xúc → Lực van der Waals MẠNH</text>
+
+                    <!-- Cột phải: Neopentane -->
+                    <rect x="340" y="12" width="305" height="226" rx="12" fill="rgba(255,255,255,0.06)" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="492" y="38" fill="#fcd34d" font-size="15" text-anchor="middle" font-weight="bold">Neopentane (mạch nhánh) – tₛ = 9,5 °C</text>
+                    <!-- Neopentane 1 (dạng cầu nhánh) -->
+                    <circle cx="422" cy="122" r="42" fill="rgba(251,191,36,0.16)" stroke="#fcd34d" stroke-width="2.5"/>
+                    <text x="422" y="127" fill="#fff" font-size="13" text-anchor="middle" font-weight="bold">C(CH₃)₄</text>
+                    <!-- Neopentane 2 -->
+                    <circle cx="562" cy="122" r="42" fill="rgba(251,191,36,0.16)" stroke="#fcd34d" stroke-width="2.5"/>
+                    <text x="562" y="127" fill="#fff" font-size="13" text-anchor="middle" font-weight="bold">C(CH₃)₄</text>
+                    <!-- Chỉ 1 vùng tiếp xúc nhỏ -->
+                    <line x1="468" y1="122" x2="516" y2="122" stroke="#ef4444" stroke-width="4" stroke-dasharray="4 4" style="animation:hBondPulse 1.2s infinite;"/>
+                    <text x="492" y="216" fill="#fcd34d" font-size="13" text-anchor="middle" font-weight="bold">Ít điểm tiếp xúc → Lực van der Waals YẾU hơn</text>
+                </svg>`;
+            document.getElementById('simActionBar').innerHTML = `<span style="color:#475569; font-weight:700;">💡 Cùng công thức C<sub>5</sub>H<sub>12</sub> (M = 72 g/mol, 42e), nhưng hình dạng phân tử quyết định diện tích tiếp xúc!</span>`;
+            document.getElementById('simDesc').innerHTML = `<strong>So sánh Hình 13.5 (tr.67):</strong> Để phá vỡ lực liên phân tử giữa các phân tử pentane mạch thẳng cần nhiều năng lượng hơn so với neopentane dạng khối cầu phân nhánh → nhiệt độ sôi pentane (36 °C) cao hơn neopentane (9,5 °C).`;
+        }
+
+        /* =====================================================================
+           8. KHÔNG GIAN LUYỆN TẬP & CHẤM ĐIỂM CHUẨN ĐỀ THI TỐT NGHIỆP 2025
+           ===================================================================== */
+        function selectPracticePart(partNum) {
+            playSound('click');
+            currentPart = partNum;
+            currentQuestionIdx = 0;
+            document.querySelectorAll('.sub-item').forEach((el, idx) => el.classList.toggle('active', idx === partNum - 1));
+            generateQuestionDots();
+            renderPracticeContent();
+        }
+
+        function generateQuestionDots() {
+            [1, 2, 3].forEach(p => {
+                const box = document.getElementById(`questionDotsPart${p}`);
+                box.style.display = (p === currentPart) ? 'grid' : 'none';
+                if (p !== currentPart) return;
+                box.innerHTML = '';
+                quizData[p].forEach((_, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'dot-btn';
+                    btn.textContent = idx + 1;
+                    if (idx === currentQuestionIdx) btn.classList.add('active');
+                    const ans = userAnswers[`${p}_${idx}`];
+                    if (ans) {
+                        if (p === 2) {
+                            if (ans.correctCount === 4) btn.classList.add('correct');
+                            else if (ans.correctCount > 0) btn.classList.add('partial');
+                            else btn.classList.add('wrong');
+                        } else {
+                            btn.classList.add(ans.isCorrect ? 'correct' : 'wrong');
+                        }
+                    }
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        playSound('click');
+                        currentQuestionIdx = idx;
+                        generateQuestionDots();
+                        renderPracticeContent();
+                        if (window.innerWidth <= 900) toggleSidebar(false);
+                    };
+                    box.appendChild(btn);
+                });
+            });
+        }
+
+        function highlightText(el, text, phrases) {
+            el.replaceChildren();
+            const clean = (phrases || []).filter(Boolean).sort((a, b) => b.length - a.length);
+            if (!clean.length) { el.textContent = text; return; }
+            const re = new RegExp(clean.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'giu');
+            let last = 0;
+            for (const m of text.matchAll(re)) {
+                const mk = document.createElement('mark');
+                mk.className = 'practice-mark';
+                mk.textContent = m[0];
+                el.append(text.slice(last, m.index), mk);
+                last = m.index + m[0].length;
+            }
+            el.append(text.slice(last));
+        }
+
+        function togglePracticeKeywords() {
+            playSound('click');
+            const btn = document.getElementById('stemToggle');
+            const active = btn.getAttribute('aria-pressed') !== 'true';
+            btn.setAttribute('aria-pressed', String(active));
+            const q = quizData[currentPart][currentQuestionIdx];
+            highlightText(document.getElementById('questionText'), q.q, active ? q.keywords : []);
+        }
+
+        function renderPracticeContent() {
+            const list = quizData[currentPart];
+            const q = list[currentQuestionIdx];
+            const key = `${currentPart}_${currentQuestionIdx}`;
+            const saved = userAnswers[key];
+
+            const titles = {
+                1: 'Phần I. Trắc nghiệm nhiều lựa chọn (4,50đ)',
+                2: 'Phần II. Trắc nghiệm Đúng / Sai 4 ý (4,00đ)',
+                3: 'Phần III. Trả lời ngắn thực nghiệm (1,50đ)'
+            };
+            document.getElementById('headerPartTitle').textContent = titles[currentPart];
+            document.getElementById('headerProgress').textContent = `Câu ${currentQuestionIdx + 1} / ${list.length}`;
+            document.getElementById('questionBadge').textContent = `Phần ${currentPart === 1 ? 'I' : currentPart === 2 ? 'II' : 'III'} • Câu ${currentQuestionIdx + 1} / ${list.length}`;
+
+            document.getElementById('stemToggle').setAttribute('aria-pressed', 'false');
+            document.getElementById('questionText').textContent = q.q;
+
+            // Bảng số liệu Phần III
+            const dataBox = document.getElementById('dataBox');
+            const layout = document.getElementById('practiceLayout');
+            if (currentPart === 3 && q.tableHTML) {
+                dataBox.style.display = 'flex';
+                document.getElementById('dataTableContainer').innerHTML = q.tableHTML;
+                layout.classList.add('has-table');
+            } else {
+                dataBox.style.display = 'none';
+                layout.classList.remove('has-table');
+            }
+
+            document.getElementById('multipleChoiceArea').style.display = currentPart === 1 ? 'grid' : 'none';
+            document.getElementById('trueFalseArea').style.display = currentPart === 2 ? 'flex' : 'none';
+            document.getElementById('shortAnswerArea').style.display = currentPart === 3 ? 'flex' : 'none';
+
+            if (currentPart === 1) {
+                const letters = ['A', 'B', 'C', 'D'];
+                document.querySelectorAll('#multipleChoiceArea .choice-btn').forEach((btn, i) => {
+                    const L = letters[i];
+                    const valEl = btn.querySelector('.choice-val');
+                    btn.classList.remove('selected', 'revealed-correct', 'revealed-wrong');
+                    if (saved) {
+                        if (L === q.answer) btn.classList.add('revealed-correct');
+                        if (saved.userAnswer === L && L !== q.answer) btn.classList.add('revealed-wrong');
+                        if (saved.userAnswer === L) btn.classList.add('selected');
+                        highlightText(valEl, q.choices[i], q.optionKeywords ? [q.optionKeywords[i]] : []);
+                    } else {
+                        valEl.textContent = q.choices[i];
+                    }
+                });
+            } else if (currentPart === 2) {
+                const container = document.getElementById('tfStatementsContainer');
+                container.innerHTML = '';
+                if (!tempTFChoices[key]) tempTFChoices[key] = saved ? { ...saved.choices } : {};
+                q.statements.forEach(st => {
+                    const chosen = tempTFChoices[key][st.id];
+                    const row = document.createElement('div');
+                    row.className = 'tf-statement-row';
+                    if (saved) row.classList.add(chosen === st.answer ? 'row-correct' : 'row-wrong');
+                    row.innerHTML = `
+                        <div class="tf-statement-text">${st.text}</div>
+                        <div class="tf-btn-pair">
+                            <button type="button" class="tf-opt-btn ${chosen === true ? 'chosen-true' : ''}" onclick="chooseTFStatement('${st.id}', true)">ĐÚNG</button>
+                            <button type="button" class="tf-opt-btn ${chosen === false ? 'chosen-false' : ''}" onclick="chooseTFStatement('${st.id}', false)">SAI</button>
+                        </div>`;
+                    container.appendChild(row);
+                });
+            } else if (currentPart === 3) {
+                document.getElementById('numberAnswer').value = saved ? saved.userAnswer : '';
+            }
+
+            renderFeedbackBox(saved);
+            updateTeacherHint();
+            document.getElementById('btnPrev').disabled = (currentQuestionIdx === 0);
+            document.getElementById('btnNext').disabled = (currentQuestionIdx === list.length - 1);
+        }
+
+        function selectChoice(letter) {
+            const q = quizData[1][currentQuestionIdx];
+            const isCorrect = (letter === q.answer);
+            userAnswers[`1_${currentQuestionIdx}`] = { userAnswer: letter, isCorrect, score: isCorrect ? 0.25 : 0 };
+            playSound(isCorrect ? 'correct' : 'wrong');
+            saveProgress();
+            generateQuestionDots();
+            renderPracticeContent();
+        }
+
+        function chooseTFStatement(stId, val) {
+            playSound('click');
+            const key = `2_${currentQuestionIdx}`;
+            if (!tempTFChoices[key]) tempTFChoices[key] = {};
+            tempTFChoices[key][stId] = val;
+            renderPracticeContent();
+        }
+
+        function submitTFQuestion() {
+            const key = `2_${currentQuestionIdx}`;
+            const q = quizData[2][currentQuestionIdx];
+            const picks = tempTFChoices[key] || {};
+            if (!q.statements.every(st => typeof picks[st.id] === 'boolean')) {
+                playSound('wrong');
+                showToast('Vui lòng chọn ĐÚNG hoặc SAI cho cả 4 ý (a, b, c, d) trước khi kiểm tra!');
+                return;
+            }
+            let correctCount = 0;
+            q.statements.forEach(st => { if (picks[st.id] === st.answer) correctCount++; });
+            const scoreMap = [0, 0.10, 0.25, 0.50, 1.00];
+            userAnswers[key] = { choices: { ...picks }, correctCount, score: scoreMap[correctCount], isCorrect: correctCount === 4 };
+            playSound(correctCount >= 3 ? 'correct' : 'wrong');
+            saveProgress();
+            generateQuestionDots();
+            renderPracticeContent();
+        }
+
+        function verifyShortAnswer() {
+            const raw = document.getElementById('numberAnswer').value.trim();
+            if (!/^[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)$/.test(raw)) {
+                playSound('wrong');
+                showToast('Hãy nhập một giá trị số hợp lệ (VD: 1,78 hoặc 160,8)');
+                return;
+            }
+            const q = quizData[3][currentQuestionIdx];
+            const userNum = Number(raw.replace(',', '.'));
+            const ansNum = Number(q.answer.replace(',', '.'));
+            const isCorrect = Math.abs(userNum - ansNum) < 1e-6;
+            userAnswers[`3_${currentQuestionIdx}`] = { userAnswer: raw, isCorrect, score: isCorrect ? 0.25 : 0 };
+            playSound(isCorrect ? 'correct' : 'wrong');
+            saveProgress();
+            generateQuestionDots();
+            renderPracticeContent();
+        }
+
+        function renderFeedbackBox(saved) {
+            const box = document.getElementById('practiceFeedback');
+            if (!saved) { box.hidden = true; return; }
+            const q = quizData[currentPart][currentQuestionIdx];
+            box.hidden = false;
+            box.className = '';
+
+            if (currentPart === 1) {
+                box.classList.add(saved.isCorrect ? 'fb-correct' : 'fb-wrong');
+                box.innerHTML = `<strong>${saved.isCorrect ? '✅ Chính xác (+0,25 điểm)' : '❌ Chưa chính xác (0,00 điểm)'}</strong> — Đáp án đúng: <strong>${q.answer}</strong><div style="margin-top:6px;">💡 <strong>Lời giải:</strong> ${q.explain}</div>`;
+            } else if (currentPart === 2) {
+                box.classList.add(saved.correctCount === 4 ? 'fb-correct' : saved.correctCount > 0 ? 'fb-partial' : 'fb-wrong');
+                const items = q.statements.map(st => {
+                    const ok = saved.choices[st.id] === st.answer;
+                    return `<li>${ok ? '✅' : '❌'} <strong>Ý ${st.id}) (${st.answer ? 'Đúng' : 'Sai'}):</strong> ${st.explain}</li>`;
+                }).join('');
+                box.innerHTML = `<strong>Kết quả: Đúng ${saved.correctCount}/4 ý (+${saved.score.toFixed(2).replace('.', ',')} điểm)</strong><ul>${items}</ul>`;
+            } else {
+                box.classList.add(saved.isCorrect ? 'fb-correct' : 'fb-wrong');
+                box.innerHTML = `<strong>${saved.isCorrect ? '✅ Chính xác (+0,25 điểm)' : '❌ Chưa chính xác (0,00 điểm)'}</strong> — Đáp án đúng: <strong>${q.answer}</strong><div style="margin-top:6px;">💡 <strong>Lời giải:</strong> ${q.explain}</div>`;
+            }
+        }
+
+        function navigateQuestion(dir) {
+            playSound('click');
+            const next = currentQuestionIdx + dir;
+            if (next >= 0 && next < quizData[currentPart].length) {
+                currentQuestionIdx = next;
+                generateQuestionDots();
+                renderPracticeContent();
+            }
+        }
+
+        function resetCurrentQuestion() {
+            playSound('click');
+            const key = `${currentPart}_${currentQuestionIdx}`;
+            delete userAnswers[key];
+            delete tempTFChoices[key];
+            saveProgress();
+            generateQuestionDots();
+            renderPracticeContent();
+            showToast('Đã làm mới câu hỏi hiện tại');
+        }
+
+        function readQuestionAudio() {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(quizData[currentPart][currentQuestionIdx].q);
+            utt.lang = 'vi-VN';
+            window.speechSynthesis.speak(utt);
+        }
+
+        /* =====================================================================
+           9. TÍNH ĐIỂM THANG 10,00 & BÁO CÁO KẾT QUẢ (DASHBOARD)
+           ===================================================================== */
+        function computeScores() {
+            let p1 = 0, p2 = 0, p3 = 0, solved = 0;
+            Object.keys(userAnswers).forEach(k => {
+                const part = Number(k.split('_')[0]);
+                const sc = userAnswers[k].score || 0;
+                solved++;
+                if (part === 1) p1 += sc;
+                if (part === 2) p2 += sc;
+                if (part === 3) p3 += sc;
+            });
+            return { p1, p2, p3, total: p1 + p2 + p3, solved };
+        }
+
+        function fmtScore(num) { return num.toFixed(2).replace('.', ','); }
+
+        function updateHeaderScore() {
+            document.getElementById('headerScore').textContent = `Điểm: ${fmtScore(computeScores().total)} / 10`;
+        }
+
+        function renderDashboard() {
+            const s = computeScores();
+            document.getElementById('dashTotalScore').textContent = `${fmtScore(s.total)} / 10`;
+            document.getElementById('dashScoreP1').textContent = `${fmtScore(s.p1)} / 4,50`;
+            document.getElementById('dashScoreP2').textContent = `${fmtScore(s.p2)} / 4,00`;
+            document.getElementById('dashScoreP3').textContent = `${fmtScore(s.p3)} / 1,50`;
+            document.getElementById('statTotalSolved').textContent = `${s.solved} / 28`;
+            const pct = Math.round((s.solved / 28) * 100);
+            document.getElementById('statProgressPct').textContent = `${pct}%`;
+            document.getElementById('statProgressBar').style.width = `${pct}%`;
+
+            [1, 2, 3].forEach(p => {
+                const grid = document.getElementById(`dashGridPart${p}`);
+                grid.innerHTML = '';
+                quizData[p].forEach((_, idx) => {
+                    const b = document.createElement('button');
+                    b.className = 'node-btn';
+                    b.textContent = idx + 1;
+                    const ans = userAnswers[`${p}_${idx}`];
+                    if (ans) {
+                        if (p === 2) b.classList.add(ans.correctCount === 4 ? 'correct' : ans.correctCount > 0 ? 'partial' : 'wrong');
+                        else b.classList.add(ans.isCorrect ? 'correct' : 'wrong');
+                    }
+                    b.onclick = () => {
+                        currentPart = p;
+                        currentQuestionIdx = idx;
+                        document.querySelectorAll('.sub-item').forEach((el, i) => el.classList.toggle('active', i === p - 1));
+                        switchPane('pane-practice', document.getElementById('practice-menu-trigger'));
+                    };
+                    grid.appendChild(b);
+                });
+            });
+        }
+
+        /* =====================================================================
+           10. MODALS: GIÁO VIÊN, ĐẶT LẠI, PHÓNG TO BẢNG, THÔNG BÁO
+           ===================================================================== */
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        function openInfoModal(emoji, title, htmlBody) {
+            document.getElementById('infoModalEmoji').textContent = emoji;
+            document.getElementById('infoModalTitle').textContent = title;
+            document.getElementById('infoModalBody').innerHTML = htmlBody;
+            document.getElementById('infoModal').classList.add('open');
+        }
+
+        function openTableZoomModal() {
+            playSound('click');
+            const q = quizData[3][currentQuestionIdx];
+            if (!q || !q.tableHTML) return;
+            document.getElementById('zoomedTableHolder').innerHTML = q.tableHTML;
+            document.getElementById('tableZoomModal').classList.add('open');
+        }
+
+        function openTeacherModal() {
+            playSound('click');
+            if (isTeacherMode) { toggleTeacherMode(false); return; }
+            document.getElementById('teacherPinInput').value = '';
+            document.getElementById('teacherPinError').style.display = 'none';
+            document.getElementById('teacherModal').classList.add('open');
+            setTimeout(() => document.getElementById('teacherPinInput').focus(), 80);
+        }
+
+        function confirmTeacherPin() {
+            if (document.getElementById('teacherPinInput').value.trim() === '1234') {
+                closeModal('teacherModal');
+                toggleTeacherMode(true);
+            } else {
+                playSound('wrong');
+                document.getElementById('teacherPinError').style.display = 'block';
+            }
+        }
+
+        function toggleTeacherMode(enable) {
+            isTeacherMode = enable;
+            document.getElementById('teacherBanner').style.display = enable ? 'flex' : 'none';
+            updateTeacherHint();
+            showToast(enable ? '🔓 Đã bật Chế độ Giáo viên' : 'Đã tắt Chế độ Giáo viên');
+        }
+
+        function updateTeacherHint() {
+            const hint = document.getElementById('teacherAnswerHint');
+            if (!hint) return;
+            const q = quizData[currentPart][currentQuestionIdx];
+            hint.textContent = currentPart === 2
+                ? q.statements.map(s => `${s.id}:${s.answer ? 'Đ' : 'S'}`).join(' | ')
+                : q.answer;
+        }
+
+        function openResetModal() { playSound('click'); document.getElementById('resetModal').classList.add('open'); }
+
+        function confirmResetPractice() {
+            userAnswers = {};
+            tempTFChoices = {};
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+            closeModal('resetModal');
+            updateHeaderScore();
+            generateQuestionDots();
+            if (currentPane === 'pane-practice') renderPracticeContent();
+            if (currentPane === 'pane-dashboard') renderDashboard();
+            showToast('🔄 Đã xóa sạch tiến độ và đặt lại toàn bộ bài luyện tập!');
+        }
+
+        /* =====================================================================
+           11. VÒNG QUAY MAY MẮN GỌI TÊN HỌC SINH
+           ===================================================================== */
+        const defaultWheelNames = ["Nguyễn Minh Anh", "Trần Gia Bảo", "Lê Thảo Chi", "Phạm Đức Duy", "Vũ Khánh Hà", "Hoàng Tuấn Kiệt", "Đỗ Bảo Ngọc", "Bùi Minh Quân", "Ngô Phương Thảo", "Phan Quốc Trung"];
+        let wheelNames = [];
+        try {
+            const savedNames = localStorage.getItem(WHEEL_KEY);
+            wheelNames = savedNames ? JSON.parse(savedNames) : [...defaultWheelNames];
+        } catch (e) { wheelNames = [...defaultWheelNames]; }
+
+        let wheelAngle = 0, isSpinning = false;
+        const wheelColors = ["#ff7675", "#fdcb6e", "#00b894", "#0984e3", "#6c5ce7", "#e84393", "#e17055", "#00cec9", "#34495e", "#f39c12"];
+
+        function drawWheel() {
+            const c = document.getElementById('wheelCanvas');
+            if (!c) return;
+            const ctx = c.getContext('2d'), w = c.width, cx = w / 2, cy = w / 2, r = w / 2 - 10;
+            ctx.clearRect(0, 0, w, w);
+            if (!wheelNames.length) {
+                ctx.fillStyle = '#334155'; ctx.font = 'bold 20px Segoe UI'; ctx.textAlign = 'center';
+                ctx.fillText('Nhập danh sách học sinh!', cx, cy); return;
+            }
+            const arc = (2 * Math.PI) / wheelNames.length;
+            wheelNames.forEach((name, i) => {
+                const a = wheelAngle + i * arc;
+                ctx.beginPath(); ctx.fillStyle = wheelColors[i % wheelColors.length];
+                ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, a, a + arc); ctx.closePath();
+                ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.save(); ctx.translate(cx, cy); ctx.rotate(a + arc / 2);
+                ctx.textAlign = 'right'; ctx.fillStyle = '#ffffff'; ctx.font = 'bold 16px Segoe UI';
+                ctx.fillText(name.slice(0, 18), r - 18, 6); ctx.restore();
+            });
+        }
+
+        function updateNamesFromInput() {
+            wheelNames = document.getElementById('namesInput').value.split('\n').map(s => s.trim()).filter(Boolean);
+            try { localStorage.setItem(WHEEL_KEY, JSON.stringify(wheelNames)); } catch (e) {}
+            drawWheel();
+        }
+
+        function resetWheelNames() {
+            playSound('click');
+            wheelNames = [...defaultWheelNames];
+            document.getElementById('namesInput').value = wheelNames.join('\n');
+            try { localStorage.setItem(WHEEL_KEY, JSON.stringify(wheelNames)); } catch (e) {}
+            drawWheel();
+        }
+
+        function spinWheel() {
+            if (isSpinning || !wheelNames.length) return;
+            isSpinning = true;
+            const startAngle = wheelAngle;
+            const spinDelta = Math.PI * (8 + Math.random() * 6);
+            const duration = 3800;
+            const t0 = performance.now();
+            let lastSector = -1;
+
+            function frame(now) {
+                const p = Math.min(1, (now - t0) / duration);
+                const ease = 1 - Math.pow(1 - p, 3);
+                wheelAngle = startAngle + spinDelta * ease;
+                const arc = (2 * Math.PI) / wheelNames.length;
+                const sector = Math.floor(((1.5 * Math.PI - wheelAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) / arc);
+                if (sector !== lastSector) { lastSector = sector; playSound('tick'); }
+                drawWheel();
+                if (p < 1) requestAnimationFrame(frame);
+                else {
+                    isSpinning = false;
+                    playSound('correct');
+                    const winner = wheelNames[sector % wheelNames.length];
+                    openInfoModal('🎉', 'VÒNG QUAY GỌI TÊN!', `Mời bạn học sinh may mắn trả lời câu hỏi:<br><strong style="font-size:2rem; color:#05c46b; display:block; margin-top:10px;">${winner}</strong>`);
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+
+        /* =====================================================================
+           12. KHỞI TẠO KHI TẢI TRANG
+           ===================================================================== */
+        window.onload = function () {
+            document.getElementById('glossaryGrid').innerHTML = glossaryCards.map(c => `
+                <div class="keyword-card" onclick="playSound('click'); this.classList.toggle('flipped')">
+                    <div class="keyword-inner">
+                        <div class="keyword-front">
+                            <span class="keyword-symbol">${c.icon}</span>
+                            <h3>${c.term}</h3>
+                            <p class="keyword-hint">Chạm để lật xem định nghĩa</p>
+                        </div>
+                        <div class="keyword-back">
+                            <h3>${c.term}</h3>
+                            <p>${c.def}</p>
+                        </div>
+                    </div>
+                </div>`).join('');
+
+            document.getElementById('namesInput').value = wheelNames.join('\n');
+            drawWheel();
+            updateTimerDisplay();
+            updateHeaderScore();
+            runSim(1);
+            generateQuestionDots();
+            if (window.innerWidth <= 900) toggleSidebar(false);
+        };
+    </script>
+</body>
+</html>
